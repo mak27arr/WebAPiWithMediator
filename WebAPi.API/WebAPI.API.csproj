@@ -14,7 +14,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\WebAPI.Infrastructure.csproj" />
-    <ProjectReference Include="..\WebAPi.Core\WebAPi.Core.csproj" />
+    <ProjectReference Include="..\WebAPi.Core\WebAPI.Core.csproj" />
+    <ProjectReference Include="..\WebAPI.Infrastructure\WebAPI.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
