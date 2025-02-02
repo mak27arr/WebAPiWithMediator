@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using WebAPI.Core.Models;
-using WebAPi.Core.Queries;
-using WebAPi.Core.Repository;
+using WebAPI.Core.Queries;
+using WebAPI.Core.Repository;
 
-namespace WebAPi.Core.Handlers
+namespace WebAPI.Core.Handlers
 {
     internal class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, IEnumerable<Product>>
     {

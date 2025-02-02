@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using WebAPi.Core.Commands;
+using WebAPI.Core.Commands;
 using WebAPI.Core.Models;
-using WebAPi.Core.Repository;
+using WebAPI.Core.Repository;
 
-namespace WebAPi.Core.Handlers
+namespace WebAPI.Core.Handlers
 {
     internal class UpdateProductHandler : IRequestHandler<UpdateProductCommand, Product>
     {

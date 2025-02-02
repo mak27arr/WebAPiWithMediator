@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using WebAPi.Core.Repository;
+using WebAPI.Core.Repository;
 using WebAPI.Core.Commands;
 using WebAPI.Core.Models;
 

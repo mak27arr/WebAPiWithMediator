@@ -1,6 +1,6 @@
 ﻿using WebAPI.Core.Models;
 
-namespace WebAPi.Core.Repository
+namespace WebAPI.Core.Repository
 {
     public interface IProductRepository
     {

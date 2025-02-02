@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using WebAPI.Core.Models;
 
-namespace WebAPi.Core.Commands
+namespace WebAPI.Core.Commands
 {
     public class UpdateProductCommand : IRequest<Product>
     {

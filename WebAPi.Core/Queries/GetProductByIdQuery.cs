@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using WebAPI.Core.Models;
 
-namespace WebAPi.Core.Queries
+namespace WebAPI.Core.Queries
 {
     public class GetProductByIdQuery : IRequest<Product>
     {

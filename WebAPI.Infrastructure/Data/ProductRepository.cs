@@ -1,5 +1,5 @@
 ﻿using WebAPI.Core.Models;
-using WebAPi.Core.Repository;
+using WebAPI.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Infrastructure.Data

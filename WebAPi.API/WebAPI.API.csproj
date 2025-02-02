@@ -8,13 +8,17 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\WebAPI.Infrastructure.csproj" />
-    <ProjectReference Include="..\WebAPi.Core\WebAPI.Core.csproj" />
+    <ProjectReference Include="..\WebAPI.Core\WebAPI.Core.csproj" />
     <ProjectReference Include="..\WebAPI.Infrastructure\WebAPI.Infrastructure.csproj" />
   </ItemGroup>
 

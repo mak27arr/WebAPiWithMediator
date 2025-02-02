@@ -1,4 +1,4 @@
-﻿namespace WebAPi.Core.Handlers
+﻿namespace WebAPI.Core.Handlers
 {
     public class MediatorRegister
     {

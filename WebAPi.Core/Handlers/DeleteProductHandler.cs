@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using WebAPi.Core.Commands;
-using WebAPi.Core.Repository;
+using WebAPI.Core.Commands;
+using WebAPI.Core.Repository;
 
 namespace WebAPI.Core.Handlers
 {

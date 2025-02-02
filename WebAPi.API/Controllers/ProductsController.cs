@@ -5,8 +5,8 @@
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using WebAPi.Core.Commands;
-    using WebAPi.Core.Queries;
+    using WebAPI.Core.Commands;
+    using WebAPI.Core.Queries;
     using WebAPI.Core.Commands;
 
     [Route("api/[controller]")]
