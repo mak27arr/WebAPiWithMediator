@@ -42,7 +42,7 @@ namespace YourNamespace.Tests
 
             Assert.IsType<Success>(result.Value);
             _mockRepository.Verify(repo => repo.UpdateProductAsync(existingProduct), Times.Once);
-            Assert.Equal("Old Product", existingProduct.Name);
+            Assert.Equal("Updated Product", existingProduct.Name);
         }
 
 

@@ -15,7 +15,7 @@ namespace WebAPI.Infrastructure.Data
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products.OrderBy(x => x.Id).ToListAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
@@ -27,6 +27,7 @@ namespace WebAPI.Infrastructure.Data
         {
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
+
             return product;
         }
 
@@ -34,6 +35,7 @@ namespace WebAPI.Infrastructure.Data
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+
             return product;
         }
 

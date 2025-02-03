@@ -31,7 +31,10 @@
         public async Task<ActionResult<Product>> GetProductById(int id)
         {
             var product = await _mediator.Send(new GetProductByIdQuery { Id = id });
-            if (product == null) return NotFound();
+
+            if (product == null) 
+                return NotFound();
+
             return Ok(product);
         }
 
@@ -39,6 +42,7 @@
         public async Task<ActionResult<Product>> AddProduct(CreateProductCommand command)
         {
             var product = await _mediator.Send(command);
+
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
 
@@ -55,6 +59,7 @@
         public async Task<IActionResult> DeleteProduct(int id)
         {
             await _mediator.Send(new DeleteProductCommand { Id = id });
+
             return NoContent();
         }
     }

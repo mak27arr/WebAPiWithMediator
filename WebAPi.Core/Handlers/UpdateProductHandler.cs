@@ -2,7 +2,6 @@
 using OneOf;
 using OneOf.Types;
 using WebAPI.Core.Commands;
-using WebAPI.Core.Models;
 using WebAPI.Core.Repository;
 
 namespace WebAPI.Core.Handlers
@@ -19,9 +18,11 @@ namespace WebAPI.Core.Handlers
         public async Task<OneOf<Success, NotFound>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var product = await _repository.GetProductByIdAsync(request.Id);
+
             if (product == null)
                 return new NotFound();
 
+            product.Name = request.Name;
             await _repository.UpdateProductAsync(product);
 
             return new Success();
