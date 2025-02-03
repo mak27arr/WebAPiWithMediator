@@ -11,6 +11,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddMapperProfile();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<MediatorRegister>());

@@ -1,17 +1,21 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using OneOf;
 using OneOf.Types;
 using WebAPI.Core.Commands;
+using WebAPI.Core.Models;
 using WebAPI.Core.Repository;
 
 namespace WebAPI.Core.Handlers
 {
     internal class UpdateProductHandler : IRequestHandler<UpdateProductCommand, OneOf<Success, NotFound>>
     {
+        private readonly IMapper _mapper;
         private readonly IProductRepository _repository;
 
-        public UpdateProductHandler(IProductRepository repository)
+        public UpdateProductHandler(IMapper mapper, IProductRepository repository)
         {
+            _mapper = mapper;
             _repository = repository;
         }
 
@@ -22,7 +26,7 @@ namespace WebAPI.Core.Handlers
             if (product == null)
                 return new NotFound();
 
-            product.Name = request.Name;
+            _mapper.Map(request, product);
             await _repository.UpdateProductAsync(product);
 
             return new Success();

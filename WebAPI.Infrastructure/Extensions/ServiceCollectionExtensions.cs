@@ -2,6 +2,7 @@
 using WebAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using WebAPI.Infrastructure.Mapping;
 
 namespace WebAPI.Infrastructure.Extensions
 {
@@ -11,6 +12,12 @@ namespace WebAPI.Infrastructure.Extensions
         {
             services.AddDbContext<DataContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            return services;
+        }
+
+        public static IServiceCollection AddMapperProfile(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(MappingProfile).Assembly);
             return services;
         }
     }
