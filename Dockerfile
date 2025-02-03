@@ -16,16 +16,8 @@ WORKDIR /app
 # Copy build artifacts from the build stage
 COPY --from=build /app/out ./
 
-# Install PostgreSQL client for health checks and waiting for DB to be ready
-RUN apt-get update && apt-get install -y postgresql-client
-
-# Copy docker-entrypoint.sh to the final image and make it executable
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-RUN ls -lah /usr/local/bin/
-
 # Expose port for your app
 EXPOSE 5000
 
 # Set the entrypoint for the application
-ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["dotnet", "WebAPI.API.dll"]

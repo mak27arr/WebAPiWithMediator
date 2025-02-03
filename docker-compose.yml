@@ -11,7 +11,9 @@
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -23,6 +25,12 @@
       - "5432:5432"
     networks:
       - webapp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--quiet"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
 networks:
   webapp-network:
     driver: bridge
