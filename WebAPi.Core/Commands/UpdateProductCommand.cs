@@ -1,9 +1,10 @@
 ﻿using MediatR;
-using WebAPI.Core.Models;
+using OneOf.Types;
+using OneOf;
 
 namespace WebAPI.Core.Commands
 {
-    public class UpdateProductCommand : IRequest<Product>
+    public class UpdateProductCommand : IRequest<OneOf<Success, NotFound>>
     {
         public int Id { get; set; }
 

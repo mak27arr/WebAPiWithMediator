@@ -8,6 +8,7 @@
     using WebAPI.Core.Commands;
     using WebAPI.Core.Queries;
     using WebAPI.Core.Commands;
+    using OneOf.Types;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -42,12 +43,12 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Product>> UpdateProduct(int id, UpdateProductCommand command)
+        public async Task<IActionResult> UpdateProduct(int id, UpdateProductCommand command)
         {
-            command.Id = id; 
-            var product = await _mediator.Send(command);
-            if (product == null) return NotFound();
-            return Ok(product);
+            command.Id = id;
+            var updateResult = await _mediator.Send(command);
+
+            return updateResult.Match<IActionResult>(success => NoContent(), notFound => NotFound());
         }
 
         [HttpDelete("{id}")]
