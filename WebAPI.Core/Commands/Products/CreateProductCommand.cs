@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using WebAPI.Core.Models;
+using WebAPI.Core.Models.Products;
 
-namespace WebAPI.Core.Commands
+namespace WebAPI.Core.Commands.Products
 {
     public class CreateProductCommand : IRequest<Product>
     {

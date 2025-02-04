@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using WebAPI.Core.Repository;
-using WebAPI.Core.Commands;
-using WebAPI.Core.Models;
+using WebAPI.Core.Commands.Products;
+using WebAPI.Core.Models.Products;
 
-namespace WebAPI.Core.Handlers
+namespace WebAPI.Core.Handlers.Products
 {
     internal class CreateProductHandler : IRequestHandler<CreateProductCommand, Product>
     {

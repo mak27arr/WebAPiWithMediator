@@ -1,6 +1,6 @@
-﻿using WebAPI.Core.Models;
-using WebAPI.Core.Repository;
+﻿using WebAPI.Core.Repository;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Core.Models.Products;
 
 namespace WebAPI.Infrastructure.Data
 {
@@ -20,7 +20,7 @@ namespace WebAPI.Infrastructure.Data
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products.Include(x => x.Currency).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Product> AddProductAsync(Product product)

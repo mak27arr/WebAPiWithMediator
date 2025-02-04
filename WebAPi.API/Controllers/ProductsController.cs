@@ -1,15 +1,16 @@
-﻿namespace WebAPI.API.Controllers
-{
-    using Core.Models;
-    using MediatR;
-    using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using WebAPI.Core.Commands;
-    using WebAPI.Core.Queries;
-    using WebAPI.Core.Commands;
-    using OneOf.Types;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebAPI.Core.Queries;
+using OneOf.Types;
+using WebAPI.Core.Commands.Products;
+using WebAPI.Core.Queries.ProductQueries;
+using WebAPI.Core.Models;
+using WebAPI.Core.Models.Products;
 
+namespace WebAPI.API.Controllers
+{
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase

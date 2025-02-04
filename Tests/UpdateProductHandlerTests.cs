@@ -1,11 +1,11 @@
 ﻿using Moq;
 using Xunit;
 using WebAPI.Core.Repository;
-using WebAPI.Core.Handlers;
-using WebAPI.Core.Commands;
-using WebAPI.Core.Models;
 using OneOf.Types;
 using AutoMapper;
+using WebAPI.Core.Handlers.Products;
+using WebAPI.Core.Commands.Products;
+using WebAPI.Core.Models.Products;
 
 namespace YourNamespace.Tests
 {

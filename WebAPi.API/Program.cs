@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Core.Handlers;
-using WebAPI.Core.Repository;
 using WebAPI.Infrastructure.Data;
 using WebAPI.Infrastructure.Extensions;
 
@@ -10,11 +8,11 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenAnyIP(5000);
 });
 builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddMapperProfile();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<MediatorRegister>());
+builder.Services.AddRepositories();
+builder.Services.ConfigureMediator();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 

@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using WebAPI.Core.Commands;
+using WebAPI.Core.Commands.Products;
 using WebAPI.Core.Repository;
 
-namespace WebAPI.Core.Handlers
+namespace WebAPI.Core.Handlers.Products
 {
     internal class DeleteProductHandler : IRequestHandler<DeleteProductCommand>
     {

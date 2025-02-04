@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using WebAPI.Core.Models;
 
-namespace WebAPI.Core.Commands
+namespace WebAPI.Core.Commands.Products
 {
     public class DeleteProductCommand : IRequest
     {

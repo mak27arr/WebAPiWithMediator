@@ -2,11 +2,10 @@
 using MediatR;
 using OneOf;
 using OneOf.Types;
-using WebAPI.Core.Commands;
-using WebAPI.Core.Models;
+using WebAPI.Core.Commands.Products;
 using WebAPI.Core.Repository;
 
-namespace WebAPI.Core.Handlers
+namespace WebAPI.Core.Handlers.Products
 {
     internal class UpdateProductHandler : IRequestHandler<UpdateProductCommand, OneOf<Success, NotFound>>
     {

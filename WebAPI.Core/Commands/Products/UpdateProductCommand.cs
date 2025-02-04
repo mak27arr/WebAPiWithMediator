@@ -2,7 +2,7 @@
 using OneOf.Types;
 using OneOf;
 
-namespace WebAPI.Core.Commands
+namespace WebAPI.Core.Commands.Products
 {
     public class UpdateProductCommand : IRequest<OneOf<Success, NotFound>>
     {

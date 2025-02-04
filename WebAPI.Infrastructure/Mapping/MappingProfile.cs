@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using WebAPI.Core.Commands;
-using WebAPI.Core.Models;
+using WebAPI.Core.Commands.Products;
+using WebAPI.Core.Models.Products;
 
 namespace WebAPI.Infrastructure.Mapping
 {
