@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using WebAPI.API.Extension;
+using WebAPI.API.Middleware;
 using WebAPI.Infrastructure.Data;
 using WebAPI.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureSerilog();
+
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.ListenAnyIP(5000);
@@ -15,7 +19,9 @@ builder.Services.AddRepositories();
 builder.Services.ConfigureMediator();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddControllers();
 
