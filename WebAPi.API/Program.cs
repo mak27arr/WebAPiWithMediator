@@ -1,25 +1,20 @@
-using Microsoft.EntityFrameworkCore;
 using WebAPI.API.Extension;
 using WebAPI.API.Middleware;
-using WebAPI.Infrastructure.Data;
 using WebAPI.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureSerilog();
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(5000);
-});
+builder.WebHost.ConfigureKestrelSettings();
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddMapperProfile();
 builder.Services.AddRepositories();
 builder.Services.ConfigureMediator();
+builder.Services.AddCustomCors();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwagger();
 
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
@@ -27,28 +22,18 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-    dbContext.Database.Migrate();
-}
+app.MigrateDatabase();
 
 if (app.Environment.IsDevelopment())
-{
     app.UseDeveloperExceptionPage();
-}
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = string.Empty; 
-});
+app.UseCustomSwagger();
+
+app.UseHttpsRedirection();
+
+app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
 
 app.Run();
