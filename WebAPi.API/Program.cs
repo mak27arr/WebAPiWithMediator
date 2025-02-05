@@ -3,10 +3,11 @@ using WebAPI.API.Middleware;
 using WebAPI.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
+
 builder.ConfigureSerilog();
 
-builder.WebHost.ConfigureKestrelSettings();
-builder.Configuration.AddEnvironmentVariables();
+builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddMapperProfile();
@@ -16,20 +17,16 @@ builder.Services.AddCustomCors();
 
 builder.Services.ConfigureSwagger();
 
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-
 builder.Services.AddControllers();
 
 var app = builder.Build();
-
 app.MigrateDatabase();
 
-if (app.Environment.IsDevelopment())
-    app.UseDeveloperExceptionPage();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCustomSwagger();
 
-app.UseHttpsRedirection();
+app.ConfigureHttpsRedirection(builder.Configuration);
 
 app.UseCors("AllowAnyOrigin");
 

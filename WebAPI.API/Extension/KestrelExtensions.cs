@@ -1,16 +1,38 @@
-﻿namespace WebAPI.API.Extension
+﻿using Microsoft.AspNetCore.Server.Kestrel.Core;
+
+namespace WebAPI.API.Extension
 {
     public static class KestrelExtensions
     {
-        public static IWebHostBuilder ConfigureKestrelSettings(this IWebHostBuilder webHostBuilder)
+        public static IWebHostBuilder ConfigureKestrelSettings(this IWebHostBuilder webHostBuilder, IConfiguration configuration)
         {
             webHostBuilder.ConfigureKestrel(serverOptions =>
             {
-                serverOptions.ListenAnyIP(5000);
-                serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
+                var httpPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Http:Port") ?? 5000;
+                serverOptions.ListenAnyIP(httpPort);
+
+                if (IsHttpsAvailable(configuration, out var httpsCertificatePath))
+                {
+                    var httpsPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Https:Port") ?? 5001;
+                    serverOptions.ListenAnyIP(httpsPort, listenOptions => listenOptions.UseHttps(httpsCertificatePath));
+                }
             });
 
             return webHostBuilder;
+        }
+
+        public static IApplicationBuilder ConfigureHttpsRedirection(this IApplicationBuilder app, IConfiguration configuration)
+        {
+            if (IsHttpsAvailable(configuration, out _))
+                app.UseHttpsRedirection();
+
+            return app;
+        }
+
+        private static bool IsHttpsAvailable(IConfiguration configuration, out string httpsCertificatePath)
+        {
+            httpsCertificatePath = configuration["KestrelPorts:Endpoints:Https:CertificatePath"];
+            return !string.IsNullOrEmpty(httpsCertificatePath) && File.Exists(httpsCertificatePath);
         }
     }
 }
