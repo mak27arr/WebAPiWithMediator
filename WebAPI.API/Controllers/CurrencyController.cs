@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Core.Commands.CurrencyCommands;
 using WebAPI.Core.Queries.CurrenciesQueries;
@@ -24,6 +25,7 @@ namespace WebAPI.API.Controllers
             return Ok(currencies);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddCurrency([FromBody] AddCurrencyCommand command)
         {

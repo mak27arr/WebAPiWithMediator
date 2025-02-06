@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Core.Commands.Products.PriceCommands;
 
@@ -15,6 +16,7 @@ namespace WebAPI.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpPost("{productId}/price")]
         public async Task<IActionResult> AddProductPrice(int productId, [FromBody] AddProductPriceCommand command)
         {

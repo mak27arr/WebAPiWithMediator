@@ -8,6 +8,8 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - GOOGLECLIENTID=${GOOGLECLIENTID}
+      - GOOGLECLIENTSECRET=${GOOGLECLIENTSECRET}
     ports:
       - "5000:5000"
     depends_on:

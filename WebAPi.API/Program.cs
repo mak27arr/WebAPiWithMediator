@@ -14,6 +14,7 @@ builder.Services.AddMapperProfile();
 builder.Services.AddRepositories();
 builder.Services.ConfigureMediator();
 builder.Services.AddCustomCors();
+builder.Services.AddAuthConfig(builder.Configuration);
 
 builder.Services.ConfigureSwagger();
 
@@ -21,6 +22,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 app.MigrateDatabase();
+
+app.ConfigureAuthentication(builder.Configuration);
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

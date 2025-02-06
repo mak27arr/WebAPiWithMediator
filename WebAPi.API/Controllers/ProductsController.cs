@@ -8,6 +8,7 @@ using WebAPI.Core.Commands.Products;
 using WebAPI.Core.Queries.ProductQueries;
 using WebAPI.Core.Models;
 using WebAPI.Core.Models.Products;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.API.Controllers
 {
@@ -39,6 +40,7 @@ namespace WebAPI.API.Controllers
             return Ok(product);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Product>> AddProduct(CreateProductCommand command)
         {
@@ -47,6 +49,7 @@ namespace WebAPI.API.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, UpdateProductCommand command)
         {
@@ -56,6 +59,7 @@ namespace WebAPI.API.Controllers
             return updateResult.Match<IActionResult>(success => NoContent(), notFound => NotFound());
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
