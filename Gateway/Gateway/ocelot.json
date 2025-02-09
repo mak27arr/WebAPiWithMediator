@@ -1,0 +1,69 @@
+{
+  "Routes": [
+    //Products
+    {
+      "UpstreamPathTemplate": "/api/Products",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Products"
+    },
+    {
+      "UpstreamPathTemplate": "/api/Products",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Products"
+    },
+    {
+      "UpstreamPathTemplate": "/api/Currency",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Currency"
+    },
+    {
+      "UpstreamPathTemplate": "/api/Currency",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Currency"
+    },
+    {
+      "UpstreamPathTemplate": "/api/ProductPrice",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "DownstreamPathTemplate": "/api/ProductPrice"
+    }
+    // to be continue
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8080"
+  }
+}

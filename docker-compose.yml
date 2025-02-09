@@ -1,8 +1,10 @@
-﻿services:
+services:
   webapi:
-    image: webapiwithmediator-webapi
-    container_name: webapi_container
-    build: .
+    image: webapi_product
+    container_name: webapi_product
+    build:
+        context: .
+        dockerfile: ./Product/docker/Dockerfile
     networks:
       - webapp-network
     environment:
@@ -15,7 +17,19 @@
     depends_on:
       postgres:
         condition: service_healthy
-
+  gateway:
+    image: ${DOCKER_REGISTRY-}gateway
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: ./Gateway/docker/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - webapi
+    networks:
+      - webapp-network
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -32,7 +46,6 @@
       interval: 1s
       timeout: 5s
       retries: 10
-
 networks:
   webapp-network:
     driver: bridge
