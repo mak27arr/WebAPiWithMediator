@@ -12,7 +12,7 @@ namespace JwtAuthManager
         private readonly string _issuer = "";
         private readonly string _audience = "";
 
-        public string GenerateToken(string username)
+        public async Task<string> GenerateToken(string username)
         {
             var claims = new[]
             {
@@ -34,7 +34,7 @@ namespace JwtAuthManager
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public bool LoginUser(string username, string password)
+        public async Task<bool> LoginUser(string username, string password)
         {
             return username == "testuser" && password == "password";
         }
