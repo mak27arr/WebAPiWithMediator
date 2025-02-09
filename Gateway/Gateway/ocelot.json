@@ -60,6 +60,17 @@
         }
       ],
       "DownstreamPathTemplate": "/api/ProductPrice"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "webapi_product",
+          "Port": 5000
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/v1/swagger.json",
+      "UpstreamHttpMethod": [ "GET" ]
     }
     // to be continue
   ],

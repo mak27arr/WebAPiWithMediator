@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WebAPI.ProductAPI.Extension
+namespace Gateway.Extension
 {
     internal static class AuthGoogleConfigExtension
     {
