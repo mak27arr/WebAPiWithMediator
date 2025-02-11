@@ -1,22 +1,11 @@
-﻿using Asp.Versioning;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using WebAPI.Infrastructure.Data;
+using Asp.Versioning;
 
-namespace WebAPI.ProductAPI.Extension
+namespace JwtAuthAPI.Extension
 {
-    //TODO: to package
     internal static class Application
     {
-        internal static void MigrateDatabase(this IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-                dbContext.Database.Migrate();
-            }
-        }
-
         internal static IServiceCollection AddCustomCors(this IServiceCollection services)
         {
             services.AddCors(options =>

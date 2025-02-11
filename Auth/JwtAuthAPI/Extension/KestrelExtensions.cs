@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Server.Kestrel.Core;
-
-namespace WebAPI.ProductAPI.Extension
+﻿namespace JwtAuthAPI.Extension
 {
     //TODO: to package
     internal static class KestrelExtensions
@@ -9,12 +7,12 @@ namespace WebAPI.ProductAPI.Extension
         {
             webHostBuilder.ConfigureKestrel(serverOptions =>
             {
-                var httpPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Http:Port") ?? 5000;
+                var httpPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Http:Port") ?? 5010;
                 serverOptions.ListenAnyIP(httpPort);
 
                 if (IsHttpsAvailable(configuration, out var httpsCertificatePath))
                 {
-                    var httpsPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Https:Port") ?? 5001;
+                    var httpsPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Https:Port") ?? 5011;
                     serverOptions.ListenAnyIP(httpsPort, listenOptions => listenOptions.UseHttps(httpsCertificatePath));
                 }
             });

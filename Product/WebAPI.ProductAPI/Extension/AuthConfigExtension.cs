@@ -2,9 +2,10 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Gateway.Extension
+namespace WebAPI.ProductAPI.Extension
 {
-    internal static class AuthConfigExtension
+    //TODO: move to package
+    public static class AuthConfigExtension
     {
         private static readonly string _authorityConfigKey = "Authentication:Authority";
         private static readonly string _issuerSigningConfigKey = "Authentication:IssuerSigningKey";

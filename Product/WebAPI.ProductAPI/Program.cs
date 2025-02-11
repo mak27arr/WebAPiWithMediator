@@ -18,6 +18,7 @@ builder.Services.AddCustomCors();
 builder.Services.ConfigureSwagger();
 
 builder.Services.AddControllers();
+builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddProductHealthChecks();
 
 var app = builder.Build();
@@ -32,6 +33,7 @@ app.ConfigureHttpsRedirection(builder.Configuration);
 app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
+app.ConfigureAuthentication(app.Configuration);
 app.MapControllers();
 app.UseHealthChecks("/health");
 

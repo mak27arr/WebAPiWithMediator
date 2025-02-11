@@ -1,4 +1,5 @@
-﻿using JwtAuthManager.Command;
+﻿using Asp.Versioning;
+using JwtAuthManager.Command;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,16 +8,16 @@ namespace JwtAuthAPI.Controller
     [ApiController]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
-    public class LoginController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public LoginController(IMediator mediator)
+        public AuthController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
             var token = await _mediator.Send(command);
