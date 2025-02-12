@@ -33,7 +33,6 @@ namespace Gateway.Extension
                     };
                 });
 
-
             services.AddAuthorization();
 
             return services;

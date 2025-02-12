@@ -1,5 +1,6 @@
 ﻿using JwtAuthManager.AuthSettings;
 using JwtAuthManager.Interface;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,24 +19,26 @@ namespace JwtAuthManager
 
         public async Task<string> GenerateToken(string username)
         {
-            var claims = new[]
+            var claimsIdentity = new ClaimsIdentity(new[]
             {
-            new Claim(ClaimTypes.Name, username),
-            new Claim("scope", "api.read")
-            };
+                new Claim(ClaimTypes.Name, username),
+                new Claim("scope", "api.read"),
+                new Claim("aud", _settings.Audience),
+                new Claim("iss", _settings.Authority)
+            });
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.IssuerSigningKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                _settings.Authority,
-                _settings.Audience,
-                claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials
-            );
+            var tokenDescriptor = new SecurityTokenDescriptor {
+                Subject = claimsIdentity,
+                NotBefore = DateTime.UtcNow,
+                Expires = DateTime.Now.AddHours(1),
+                SigningCredentials = credentials
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var handler = new JsonWebTokenHandler();
+            return handler.CreateToken(tokenDescriptor);
         }
 
         public async Task<ClaimsPrincipal> ValidateToken(string token)
