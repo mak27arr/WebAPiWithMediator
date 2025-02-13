@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using WebAPI.Core.Repository;
-using WebAPI.Core.Models;
 using WebAPI.Core.Commands.CurrencyCommands;
+using WebAPI.Infrastructure.Models;
 
 namespace WebAPI.Core.Handlers.CurrencyHandlers
 {

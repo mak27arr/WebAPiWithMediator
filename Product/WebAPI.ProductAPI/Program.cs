@@ -1,6 +1,6 @@
 using WebAPI.ProductAPI.Extension;
 using WebAPI.ProductAPI.Middleware;
-using WebAPI.Infrastructure.Extensions;
+using WebAPI.Core.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -8,11 +8,7 @@ builder.Configuration.AddEnvironmentVariables();
 builder.ConfigureSerilog();
 
 builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
-
-builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddMapperProfile();
-builder.Services.AddRepositories();
-builder.Services.ConfigureMediator();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddCustomCors();
 
 builder.Services.ConfigureSwagger();
@@ -22,7 +18,9 @@ builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddProductHealthChecks();
 
 var app = builder.Build();
-app.MigrateDatabase();
+
+using (var scope = app.Services.CreateScope())
+    scope.ApplyCoreMaintenanceJobs();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

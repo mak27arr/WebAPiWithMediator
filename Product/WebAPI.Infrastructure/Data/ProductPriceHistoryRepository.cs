@@ -1,6 +1,6 @@
 ﻿using System;
-using WebAPI.Core.Models;
 using WebAPI.Core.Repository;
+using WebAPI.Infrastructure.Models;
 
 namespace WebAPI.Infrastructure.Data
 {

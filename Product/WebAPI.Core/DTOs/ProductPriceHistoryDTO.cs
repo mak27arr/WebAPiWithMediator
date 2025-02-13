@@ -1,14 +1,12 @@
-﻿using WebAPI.Core.Models.Products;
-
-namespace WebAPI.Core.Models
+﻿namespace WebAPI.Core.DTOs
 {
-    public class ProductPriceHistory
+    public class ProductPriceHistoryDTO
     {
         public long Id { get; set; }
 
         public int ProductId { get; set; }
 
-        public Product Product { get; set; }
+        public ProductDTO Product { get; set; }
 
         public double Price { get; set; }
 
@@ -16,6 +14,6 @@ namespace WebAPI.Core.Models
 
         public int CurrencyId { get; set; }
 
-        public Currency Currency { get; set; }
+        public CurrencyDTO Currency { get; set; }
     }
 }

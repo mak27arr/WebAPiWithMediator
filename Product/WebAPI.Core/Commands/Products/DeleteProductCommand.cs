@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using WebAPI.Core.Models;
 
 namespace WebAPI.Core.Commands.Products
 {

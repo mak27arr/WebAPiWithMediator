@@ -16,5 +16,8 @@
       <_Parameter1>WebAPI.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+<ItemGroup>
+  <ProjectReference Include="..\WebAPI.Infrastructure\WebAPI.Infrastructure.csproj" />
+</ItemGroup>
 
 </Project>

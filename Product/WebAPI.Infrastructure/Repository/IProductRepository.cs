@@ -1,4 +1,4 @@
-﻿using WebAPI.Core.Models.Products;
+﻿using WebAPI.Infrastructure.Models;
 
 namespace WebAPI.Core.Repository
 {

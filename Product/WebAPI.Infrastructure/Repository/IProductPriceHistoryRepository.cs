@@ -1,4 +1,4 @@
-﻿using WebAPI.Core.Models;
+﻿using WebAPI.Infrastructure.Models;
 
 namespace WebAPI.Core.Repository
 {

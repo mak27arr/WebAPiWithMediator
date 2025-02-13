@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Core.Commands.Products;
 using WebAPI.Core.Queries.ProductQueries;
-using WebAPI.Core.Models.Products;
 using Microsoft.AspNetCore.Authorization;
 using Asp.Versioning;
+using WebAPI.Core.DTOs;
 
 namespace WebAPI.ProductAPI.Controllers
 {
@@ -21,13 +21,13 @@ namespace WebAPI.ProductAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
             return Ok(await _mediator.Send(new GetAllProductsQuery()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(int id)
+        public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             var product = await _mediator.Send(new GetProductByIdQuery { Id = id });
 
@@ -39,7 +39,7 @@ namespace WebAPI.ProductAPI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Product>> AddProduct(CreateProductCommand command)
+        public async Task<ActionResult<ProductDTO>> AddProduct(CreateProductCommand command)
         {
             var product = await _mediator.Send(command);
 

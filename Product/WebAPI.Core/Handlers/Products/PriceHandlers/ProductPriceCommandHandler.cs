@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using WebAPI.Core.Commands.Products.PriceCommands;
 using WebAPI.Core.Repository;
+using WebAPI.Infrastructure.Models;
 
 namespace WebAPI.Core.Handlers.Products.PriceHandlers
 {
@@ -30,7 +31,7 @@ namespace WebAPI.Core.Handlers.Products.PriceHandlers
             if (currency == null)
                 throw new ArgumentException("Currency not found.");
 
-            var price = new Models.ProductPriceHistory
+            var price = new ProductPriceHistory
             {
                 ProductId = request.ProductId,
                 Price = request.Price,

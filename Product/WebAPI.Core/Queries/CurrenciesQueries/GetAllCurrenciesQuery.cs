@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using WebAPI.Core.Models;
+using WebAPI.Core.DTOs;
 
 namespace WebAPI.Core.Queries.CurrenciesQueries
 {
-    public class GetAllCurrenciesQuery : IRequest<List<Currency>>
+    public class GetAllCurrenciesQuery : IRequest<List<CurrencyDTO>>
     {
     }
 }

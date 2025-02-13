@@ -6,15 +6,12 @@ using WebAPI.Infrastructure.Data;
 namespace WebAPI.ProductAPI.Extension
 {
     //TODO: to package
-    internal static class Application
+    internal static class ApplicationExtensions
     {
-        internal static void MigrateDatabase(this IApplicationBuilder app)
+        internal static void MigrateDatabase(this IServiceScope scope)
         {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-                dbContext.Database.Migrate();
-            }
+            var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            dbContext.Database.Migrate();
         }
 
         internal static IServiceCollection AddCustomCors(this IServiceCollection services)

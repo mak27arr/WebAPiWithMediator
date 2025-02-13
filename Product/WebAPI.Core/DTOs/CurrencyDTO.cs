@@ -1,6 +1,6 @@
-﻿namespace WebAPI.Core.Models
+﻿namespace WebAPI.Core.DTOs
 {
-    public class Currency
+    public class CurrencyDTO
     {
         public int Id { get; set; }
 
