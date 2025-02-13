@@ -1,0 +1,35 @@
+using Inventory.Application.Extensions;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
+
+//builder.ConfigureSerilog();
+
+//builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
+
+builder.Services.AddApplicationServices(builder.Configuration);
+//builder.Services.AddCustomCors();
+
+//builder.Services.ConfigureSwagger();
+
+builder.Services.AddControllers();
+//builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
+//builder.Services.AddProductHealthChecks();
+
+var app = builder.Build();
+app.Services.ApplyApplicationMaintenanceJobs();
+
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+//app.UseCustomSwagger();
+
+//app.ConfigureHttpsRedirection(builder.Configuration);
+
+//app.UseCors("AllowAnyOrigin");
+
+app.UseRouting();
+//app.ConfigureAuthentication(app.Configuration);
+app.MapControllers();
+app.UseHealthChecks("/health");
+
+app.Run();

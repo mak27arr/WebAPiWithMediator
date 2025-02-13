@@ -1,0 +1,4 @@
+﻿namespace Inventory.Application.Extensions
+{
+
+}
