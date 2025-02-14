@@ -30,6 +30,14 @@ jobs:
       - name: Pack the project (Create NuGet package)
         run: dotnet pack Common/Products.Common/Products.Common.csproj --configuration Release --output ./nupkgs
 
+      - name: Create Git tag
+        run: |
+          TAG_NAME="v$(date +'%Y.%m.%d.%H%M%S')"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create GitHub Release and Upload Package
         uses: softprops/action-gh-release@v1
         with:
