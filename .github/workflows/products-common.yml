@@ -1,0 +1,40 @@
+name: Build and Publish Products.Common
+
+on:
+  push:
+    paths:
+      - 'Common/Products.Common/**'
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Common/Products.Common/Products.Common.csproj
+
+      - name: Build the project
+        run: dotnet build Common/Products.Common/Products.Common.csproj --configuration Release
+
+      - name: Pack the project (Create NuGet package)
+        run: dotnet pack Common/Products.Common/Products.Common.csproj --configuration Release --output ./nupkgs
+
+      - name: Publish package to GitHub Packages
+        run: |
+          dotnet nuget push ./nupkgs/*.nupkg --source https://nuget.pkg.github.com/mak27arr/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify push success
+        run: echo "Package has been successfully pushed to GitHub Packages."
