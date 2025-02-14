@@ -20,6 +20,18 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '8.x'
+      - name: Generate Tag Name
+        run: echo "TAG_NAME=v$(date +'%Y.%m.%d.%H%M%S')" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+         git config --global user.name "GitHub Actions"
+         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and Push Tag
+        run: |
+            git tag $TAG_NAME
+            git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/mak27arr/WebAPiWithMediator.git $TAG_NAME
 
       - name: Restore dependencies
         run: dotnet restore Common/Products.Common/Products.Common.csproj
@@ -38,12 +50,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub Release and Upload Package
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./nupkgs/*.nupkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         tag_name: ${{ env.TAG_NAME }}
+         files: ./nupkgs/*.nupkg
+         token: ${{ secrets.GH_PAT }}
 
       - name: Verify push success
         run: echo "Package has been successfully pushed to GitHub Releases."
