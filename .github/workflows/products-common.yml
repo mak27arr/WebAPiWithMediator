@@ -1,4 +1,4 @@
-name: Build and Publish Products.Common
+name: Publish Products.Common to GitHub Packages
 
 on:
   push:
@@ -9,19 +9,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '8.0'
+          source-url: https://nuget.pkg.github.com/mak27arr/index.json
 
       - name: Restore dependencies
         run: dotnet restore Common/Products.Common/Products.Common.csproj
@@ -29,17 +28,14 @@ jobs:
       - name: Build the project
         run: dotnet build Common/Products.Common/Products.Common.csproj --configuration Release
 
+      - name: Generate version from last tag
+        id: version
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV || echo "VERSION=1.0.0" >> $GITHUB_ENV
+
       - name: Pack the project (Create NuGet package)
-        run: dotnet pack Common/Products.Common/Products.Common.csproj --configuration Release --output ./nupkgs
+        run: dotnet pack Common/Products.Common/Products.Common.csproj --configuration Release --output ./nupkgs --version-suffix "${{ env.VERSION }}"
 
-      - name: Get latest Git tag
-        id: get_tag
-        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-          files: ./nupkgs/*.nupkg
+      - name: Push package to GitHub Packages
+        run: dotnet nuget push ./nupkgs/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
