@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v2
@@ -30,14 +32,14 @@ jobs:
       - name: Pack the project (Create NuGet package)
         run: dotnet pack Common/Products.Common/Products.Common.csproj --configuration Release --output ./nupkgs
 
-      - name: Create Release and Upload Package
+      - name: Get latest Git tag
+        id: get_tag
+        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.0
+          tag_name: ${{ env.TAG_NAME }}
           files: ./nupkgs/*.nupkg
-          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Verify push success
-        run: echo "Package has been successfully pushed to GitHub Releases."
