@@ -5,7 +5,7 @@ namespace Inventory.Application.Extensions
 {
     public static class ApplicationExtensions
     {
-        public static IServiceScope ApplyCoreMaintenanceJobs(this IServiceScope scope)
+        public static IServiceScope ApplyApplicationMaintenanceJobs(this IServiceScope scope)
         {
             scope.ApplyInfrastructureMaintenanceJobs();
 
