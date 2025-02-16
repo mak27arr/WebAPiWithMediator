@@ -5,9 +5,8 @@ using OneOf.Types;
 using AutoMapper;
 using WebAPI.Core.Handlers.Products;
 using WebAPI.Core.Commands.Products;
-using WebAPI.Core.Models.Products;
 
-namespace YourNamespace.Tests
+namespace Products.Tests
 {
     public class UpdateProductHandlerTests
     {

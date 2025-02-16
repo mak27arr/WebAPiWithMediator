@@ -20,6 +20,27 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  inventoryService:
+    image: inventory_Service
+    container_name: inventory_Service
+    build:
+        context: .
+        dockerfile: ./InventoryService/docker/Dockerfile
+    networks:
+      - webapp-network
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_InventoryService_DB};Username=${POSTGRES_InventoryService_USER};Password=${POSTGRES_InventoryService_PASSWORD}
+      - AUTHENTICATION_AUTHORITY=${AUTHENTICATION_AUTHORITY}
+      - AUTHENTICATION_ISSUERSIGNINGKEY=${AUTHENTICATION_ISSUERSIGNINGKEY}
+      - AUTHENTICATION_AUDIENCE=${AUTHENTICATION_AUDIENCE}
+    ports:
+      - "5020:5020"
+    depends_on:
+      postgres:
+        condition: service_healthy
   gateway:
     image: ${DOCKER_REGISTRY-}gateway
     container_name: gateway

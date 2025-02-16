@@ -1,6 +1,5 @@
 {
   "Routes": [
-    //Products
     {
       "DownstreamPathTemplate": "/api/Products/{everything}",
       "DownstreamScheme": "http",
@@ -95,7 +94,25 @@
       ],
       "UpstreamPathTemplate": "/swagger/v1/swagger.json",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Inventory/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory_Service",
+          "Port": 5020
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Products/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     }
+
     // to be continue
   ],
   "GlobalConfiguration": {

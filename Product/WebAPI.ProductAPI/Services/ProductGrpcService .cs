@@ -14,7 +14,7 @@ namespace WebAPI.ProductAPI.Services
             _mediator = mediator;
         }
 
-        public override async Task<ProductResponse> CheckProductExists(ProductRequest request, ServerCallContext context)
+        public override async Task<ProductResponse> GetProductById(ProductRequest request, ServerCallContext context)
         {
             var product = await _mediator.Send(new GetProductByIdQuery() { Id = request.ProductId });
 

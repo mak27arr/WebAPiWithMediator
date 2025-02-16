@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Inventory.Application.Features.Inventory.Commands
 {
-    internal class RemoveProductFromInventoryCommandHandler : IRequestHandler<RemoveProductFromInventoryCommand, int>
+    internal class RemoveProductFromInventoryCommandHandler : IRequestHandler<RemoveProductFromInventoryCommand, bool>
     {
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IEventStoreRepository _eventStoreRepository;
@@ -16,7 +16,7 @@ namespace Inventory.Application.Features.Inventory.Commands
             _eventStoreRepository = eventStoreRepository;
         }
 
-        public async Task<int> Handle(RemoveProductFromInventoryCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(RemoveProductFromInventoryCommand request, CancellationToken cancellationToken)
         {
             var productStoreModel = new ProductStoreModel
             {
@@ -45,7 +45,7 @@ namespace Inventory.Application.Features.Inventory.Commands
                 await _eventStoreRepository.AddEventAsync(inventoryEvent);
             }
 
-            return result;
+            return result > 0;
         }
     }
 }

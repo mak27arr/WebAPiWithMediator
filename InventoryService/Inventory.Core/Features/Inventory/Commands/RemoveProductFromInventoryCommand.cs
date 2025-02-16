@@ -2,7 +2,7 @@
 
 namespace Inventory.Application.Features.Inventory.Commands
 {
-    public class RemoveProductFromInventoryCommand : IRequest<int>
+    public class RemoveProductFromInventoryCommand : IRequest<bool>
     {
         public int ProductId { get; set; }
 

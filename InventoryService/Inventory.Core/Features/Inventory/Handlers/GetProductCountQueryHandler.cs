@@ -1,5 +1,5 @@
 ﻿using Inventory.Application.Features.Inventory.Queries;
-using Inventory.Application.Interface.Repository;
+using Inventory.Domain.Interface.Repository;
 using Inventory.Domain.ValueObjects;
 using MediatR;
 

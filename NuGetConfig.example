@@ -1,0 +1,12 @@
+<configuration>
+	<packageSources>
+		<add key="GitHubPackages" value="https://nuget.pkg.github.com/mak27arr/index.json" />
+		<add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+	</packageSources>
+	<packageSourceCredentials>
+		<GitHubPackages>
+			<add key="Username" value="" />
+			<add key="ClearTextPassword" value="" />
+		</GitHubPackages>
+	</packageSourceCredentials>
+</configuration>

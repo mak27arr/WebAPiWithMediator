@@ -1,5 +1,5 @@
 ﻿using Inventory.Domain.Events;
-using Inventory.Domain.Interface.Data;
+using Inventory.Domain.Interface.Repository;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +7,9 @@ namespace Inventory.Infrastructure.Repositories
 {
     internal class EventStoreRepository : IEventStoreRepository
     {
-        private readonly EventStoreDbContext _dbContext;
+        private readonly InventoryDbContext _dbContext;
 
-        public EventStoreRepository(EventStoreDbContext dbContext)
+        public EventStoreRepository(InventoryDbContext dbContext)
         {
             _dbContext = dbContext;
         }

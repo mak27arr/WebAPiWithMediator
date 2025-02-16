@@ -43,6 +43,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthManager", "Auth\JwtAuthManager\JwtAuthManager.csproj", "{B7CE570B-C323-434B-8731-587F04C3DF49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InventoryService", "InventoryService", "{6B22E6F6-A3EF-496A-8671-980C29E3D410}"
+	ProjectSection(SolutionItems) = preProject
+		InventoryService\docker\Dockerfile = InventoryService\docker\Dockerfile
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Infrastructure", "InventoryService\Inventory.Infrastructure\Inventory.Infrastructure.csproj", "{B74CCEF2-135D-4888-8A64-A478A0B6817E}"
 EndProject
@@ -53,6 +56,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.API", "InventoryService\Inventory.API\Inventory.API.csproj", "{D5A26F54-6A64-410B-A1E3-A9909FE94D1D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Common", "Common\Products.Common\Products.Common.csproj", "{2A1CCB2C-CF23-4267-8C09-B5230C4987FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{E58513BC-25C8-40C7-8435-CB3F19824706}"
+	ProjectSection(SolutionItems) = preProject
+		InventoryService\docker\Dockerfile = InventoryService\docker\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +140,7 @@ Global
 		{79D1006F-6F68-4351-91EC-4163D58A9F6B} = {6B22E6F6-A3EF-496A-8671-980C29E3D410}
 		{D5A26F54-6A64-410B-A1E3-A9909FE94D1D} = {6B22E6F6-A3EF-496A-8671-980C29E3D410}
 		{2A1CCB2C-CF23-4267-8C09-B5230C4987FB} = {FD623928-A3C0-4565-AC71-9C7B785D8609}
+		{E58513BC-25C8-40C7-8435-CB3F19824706} = {6B22E6F6-A3EF-496A-8671-980C29E3D410}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C24CEB32-C61F-4324-8C4F-0833793DA693}

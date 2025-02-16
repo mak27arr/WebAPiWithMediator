@@ -17,7 +17,9 @@ builder.Services.AddControllers();
 //builder.Services.AddProductHealthChecks();
 
 var app = builder.Build();
-app.Services.ApplyApplicationMaintenanceJobs();
+
+using (var scope = app.Services.CreateScope())
+    scope.ApplyCoreMaintenanceJobs();
 
 //app.UseMiddleware<ExceptionHandlingMiddleware>();
 

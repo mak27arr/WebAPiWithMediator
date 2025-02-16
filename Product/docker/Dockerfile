@@ -6,8 +6,9 @@ WORKDIR /src
 COPY Product/WebAPI.ProductAPI/WebAPI.ProductAPI.csproj WebAPI.ProductAPI/
 COPY Product/WebAPI.Core/WebAPI.Core.csproj WebAPI.Core/
 COPY Product/WebAPI.Infrastructure/WebAPI.Infrastructure.csproj WebAPI.Infrastructure/
+COPY NuGet.Config /root/.nuget/NuGet.Config
 
-RUN dotnet restore WebAPI.ProductAPI/WebAPI.ProductAPI.csproj
+RUN dotnet restore WebAPI.ProductAPI/WebAPI.ProductAPI.csproj --configfile /root/.nuget/NuGet.Config
 
 COPY Product/ .
 

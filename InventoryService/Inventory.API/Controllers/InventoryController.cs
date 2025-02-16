@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Inventory.Application.DTOs;
 using Inventory.Application.Features.Inventory.Commands;
 using Inventory.Application.Features.Inventory.Queries;
@@ -24,7 +25,7 @@ namespace Inventory.API.Controllers
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProduct([FromBody] ProductStoreDto productStoreDto)
         {
-            var command = _mapper.Map<AddProductToInventoryCommand>(productStoreDto);  // Map the DTO to the command
+            var command = _mapper.Map<AddProductToInventoryCommand>(productStoreDto);
             var result = await _mediator.Send(command);
 
             if (result)
@@ -36,7 +37,7 @@ namespace Inventory.API.Controllers
         [HttpPost("RemoveProduct")]
         public async Task<IActionResult> RemoveProduct([FromBody] ProductStoreDto productStoreDto)
         {
-            var command = _mapper.Map<RemoveProductFromInventoryCommand>(productStoreDto);  // Map the DTO to the command
+            var command = _mapper.Map<RemoveProductFromInventoryCommand>(productStoreDto);
             var result = await _mediator.Send(command);
 
             if (result)

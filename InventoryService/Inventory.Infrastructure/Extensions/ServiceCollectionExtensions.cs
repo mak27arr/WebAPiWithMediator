@@ -1,4 +1,5 @@
-﻿using Inventory.Infrastructure.Persistence;
+﻿using Inventory.Domain.Interface.Repository;
+using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,16 @@ namespace Inventory.Infrastructure.Extensions
             return services;
         }
 
+        public static IServiceScope ApplyInfrastructureMaintenanceJobs(this IServiceScope scope)
+        {
+            using (var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>())
+                dbContext.Database.Migrate();
+
+            return scope;
+        }
+
         internal static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<EventStoreDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<InventoryDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             return services;
         }
