@@ -11,5 +11,6 @@ message ProductRequest {
 }
 
 message ProductResponse {
-  bool exists = 1;
+   int32 product_id = 1;
+   string product_name = 2;
 }
