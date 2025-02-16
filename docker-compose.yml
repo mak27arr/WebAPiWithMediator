@@ -21,8 +21,8 @@ services:
       postgres:
         condition: service_healthy
   inventoryService:
-    image: inventory_Service
-    container_name: inventory_Service
+    image: inventory_service
+    container_name: inventory_service
     build:
         context: .
         dockerfile: ./InventoryService/docker/Dockerfile

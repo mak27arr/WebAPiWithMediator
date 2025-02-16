@@ -5,6 +5,7 @@ using OneOf.Types;
 using AutoMapper;
 using WebAPI.Core.Handlers.Products;
 using WebAPI.Core.Commands.Products;
+using WebAPI.Infrastructure.Models;
 
 namespace Products.Tests
 {

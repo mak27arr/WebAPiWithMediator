@@ -101,7 +101,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "inventory_Service",
+          "Host": "inventory_service",
           "Port": 5020
         }
       ],

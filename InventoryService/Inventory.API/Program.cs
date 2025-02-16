@@ -1,5 +1,6 @@
+using Inventory.API.Extension;
 using Inventory.Application.Extensions;
-
+//Almost all to package
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
@@ -14,7 +15,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddControllers();
 //builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
-//builder.Services.AddProductHealthChecks();
+builder.Services.AddProductHealthChecks();
 
 var app = builder.Build();
 
