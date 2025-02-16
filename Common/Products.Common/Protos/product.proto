@@ -3,7 +3,7 @@
 option csharp_namespace = "ProductService.Grpc";
 
 service ProductService {
-  rpc CheckProductExists (ProductRequest) returns (ProductResponse);
+  rpc GetProductById (ProductRequest) returns (ProductResponse);
 }
 
 message ProductRequest {
