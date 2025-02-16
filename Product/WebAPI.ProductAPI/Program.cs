@@ -1,6 +1,7 @@
 using WebAPI.ProductAPI.Extension;
 using WebAPI.ProductAPI.Middleware;
 using WebAPI.Core.Extensions;
+using WebAPI.ProductAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -9,6 +10,7 @@ builder.ConfigureSerilog();
 
 builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddGrpc();
 builder.Services.AddCustomCors();
 
 builder.Services.ConfigureSwagger();
@@ -32,6 +34,7 @@ app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
 app.ConfigureAuthentication(app.Configuration);
+app.MapGrpcService<ProductGrpcService>();
 app.MapControllers();
 app.UseHealthChecks("/health");
 
