@@ -105,7 +105,7 @@
           "Port": 5020
         }
       ],
-      "UpstreamPathTemplate": "/api/Products/{everything}",
+      "UpstreamPathTemplate": "/api/Inventory/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

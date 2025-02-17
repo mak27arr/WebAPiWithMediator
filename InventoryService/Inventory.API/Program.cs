@@ -1,17 +1,18 @@
 using Inventory.API.Extension;
 using Inventory.Application.Extensions;
+
 //Almost all to package
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 //builder.ConfigureSerilog();
 
-//builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
+builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
 
 builder.Services.AddApplicationServices(builder.Configuration);
 //builder.Services.AddCustomCors();
 
-//builder.Services.ConfigureSwagger();
+builder.Services.ConfigureSwagger();
 
 builder.Services.AddControllers();
 //builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
@@ -24,7 +25,7 @@ using (var scope = app.Services.CreateScope())
 
 //app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-//app.UseCustomSwagger();
+app.UseCustomSwagger();
 
 //app.ConfigureHttpsRedirection(builder.Configuration);
 
