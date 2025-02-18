@@ -22,11 +22,13 @@ namespace Inventory.Application.Extensions
         private static IServiceCollection RegisterGrpcService(this IServiceCollection services, IConfiguration configuration)
         {
             var grpcUrl = configuration.GetValue<string>("GrpcSettings:ProductServiceUrl");
+
             services.AddGrpcClient<ProductService.Grpc.ProductService.ProductServiceClient>(options =>
             {
                 options.Address = new Uri(grpcUrl);
             });
             services.AddScoped<IProductGrpcService, ProductGrpcService>();
+
             return services;
         }
     }

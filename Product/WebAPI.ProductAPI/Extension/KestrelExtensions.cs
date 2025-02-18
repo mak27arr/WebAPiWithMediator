@@ -17,6 +17,12 @@ namespace WebAPI.ProductAPI.Extension
                     var httpsPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:Https:Port") ?? 5001;
                     serverOptions.ListenAnyIP(httpsPort, listenOptions => listenOptions.UseHttps(httpsCertificatePath));
                 }
+
+                var grpcPort = configuration.GetValue<int?>("KestrelPorts:Endpoints:gRPC:Port") ?? 5003;
+                serverOptions.ListenAnyIP(grpcPort, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                });
             });
 
             return webHostBuilder;

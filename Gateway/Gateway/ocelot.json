@@ -73,7 +73,7 @@
       }
     },
     {
-      "UpstreamPathTemplate": "/api/Auth",
+      "UpstreamPathTemplate": "/api/Auth/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -82,7 +82,7 @@
           "Port": 5010
         }
       ],
-      "DownstreamPathTemplate": "/api/Auth/Login"
+      "DownstreamPathTemplate": "/api/Auth/{everything}"
     },
     {
       "DownstreamPathTemplate": "/swagger/v1/swagger.json",

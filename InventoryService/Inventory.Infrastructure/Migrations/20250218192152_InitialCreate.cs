@@ -34,7 +34,7 @@ namespace Inventory.Infrastructure.Migrations
                 {
                     ProductId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Quantity = table.Column<int>(type: "integer", nullable: false)
+                    Quantity = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {

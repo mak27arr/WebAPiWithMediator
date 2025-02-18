@@ -51,7 +51,7 @@ namespace Inventory.Infrastructure.Repositories
                     _dbContext.ProductInventories.Remove(productInventory);
 
                 await _dbContext.SaveChangesAsync();
-                return productInventory.Quantity;
+                return productInventory.Quantity ?? 0;
             }
 
             return 0;

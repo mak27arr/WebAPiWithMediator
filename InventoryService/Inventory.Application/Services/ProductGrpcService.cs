@@ -14,6 +14,7 @@ namespace Inventory.Application.Services
         public async Task<bool> ProductExistsAsync(int productId)
         {
             var request = new ProductService.Grpc.ProductRequest { ProductId = productId };
+
             var response = await _client.GetProductByIdAsync(request);
 
             return response?.ProductId != null;

@@ -10,11 +10,10 @@ builder.ConfigureSerilog();
 
 builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddGrpc();
 builder.Services.AddCustomCors();
-
 builder.Services.ConfigureSwagger();
 
+builder.Services.AddGrpc();
 builder.Services.AddControllers();
 builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddProductHealthChecks();
