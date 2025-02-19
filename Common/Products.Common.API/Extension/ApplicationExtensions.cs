@@ -1,20 +1,11 @@
 ﻿using Asp.Versioning;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using WebAPI.Infrastructure.Data;
 
-namespace WebAPI.ProductAPI.Extension
+namespace Products.Common.API.Extension
 {
-    //TODO: to package
-    internal static class ApplicationExtensions
+    public static class ApplicationExtensions
     {
-        internal static void MigrateDatabase(this IServiceScope scope)
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-            dbContext.Database.Migrate();
-        }
-
-        internal static IServiceCollection AddCustomCors(this IServiceCollection services)
+        public static IServiceCollection AddCustomCors(this IServiceCollection services)
         {
             services.AddCors(options =>
             {
@@ -29,7 +20,7 @@ namespace WebAPI.ProductAPI.Extension
             return services;
         }
 
-        internal static IServiceCollection ConfigureApiVersion(this IServiceCollection services)
+        public static IServiceCollection ConfigureApiVersion(this IServiceCollection services)
         {
             var apiVersioningBuilder = services.AddApiVersioning(options =>
             {
@@ -48,10 +39,12 @@ namespace WebAPI.ProductAPI.Extension
             return services;
         }
 
-        internal static IServiceCollection AddProductHealthChecks(this IServiceCollection services)
+        public static IServiceCollection AddProductHealthChecks(this IServiceCollection services, Func<HealthCheckResult> check = null)
         {
-            services.AddHealthChecks()
-                    .AddCheck("Product Service", () => HealthCheckResult.Healthy("Product Service is running."));
+            if (check == null)
+                check = () => HealthCheckResult.Healthy("Product Service is running.");
+
+            services.AddHealthChecks().AddCheck("Product Service", check);
 
             return services;
         }

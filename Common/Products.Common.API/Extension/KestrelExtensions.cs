@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Server.Kestrel.Core;
 
-namespace WebAPI.ProductAPI.Extension
+namespace Products.Common.API.Extension
 {
-    //TODO: to package
-    internal static class KestrelExtensions
+    public static class KestrelExtensions
     {
-        internal static IWebHostBuilder ConfigureKestrelSettings(this IWebHostBuilder webHostBuilder, IConfiguration configuration)
+        public static IWebHostBuilder ConfigureKestrelSettings(this IWebHostBuilder webHostBuilder, IConfiguration configuration)
         {
             webHostBuilder.ConfigureKestrel(serverOptions =>
             {
@@ -28,7 +27,7 @@ namespace WebAPI.ProductAPI.Extension
             return webHostBuilder;
         }
 
-        internal static IApplicationBuilder ConfigureHttpsRedirection(this IApplicationBuilder app, IConfiguration configuration)
+        public static IApplicationBuilder ConfigureHttpsRedirection(this IApplicationBuilder app, IConfiguration configuration)
         {
             if (IsHttpsAvailable(configuration, out _))
                 app.UseHttpsRedirection();

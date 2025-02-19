@@ -1,5 +1,4 @@
 using WebAPI.ProductAPI.Extension;
-using WebAPI.ProductAPI.Middleware;
 using WebAPI.Core.Extensions;
 using WebAPI.ProductAPI.Services;
 

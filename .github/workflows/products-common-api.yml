@@ -1,0 +1,44 @@
+name: Publish Products.Common.API to GitHub Packages
+
+on:
+  push:
+    paths:
+      - 'Common/Products.Common.API/**'
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restore dependencies
+        run: dotnet restore Common/Products.Common.API/Products.Common.API.csproj
+
+      - name: Build the project
+        run: dotnet build Common/Products.Common.API/Products.Common.API.csproj --configuration Release
+
+      - name: Generate version from last tag
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "1.0.0")
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Pack the project (Create NuGet package)
+        run: dotnet pack Common/Products.Common.API/Products.Common.API.csproj --configuration Release --output ./nupkgs --version-suffix "${{ env.VERSION }}"
+
+      - name: Push package to GitHub Packages
+        run: dotnet nuget push ./nupkgs/*.nupkg --source "https://nuget.pkg.github.com/mak27arr/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

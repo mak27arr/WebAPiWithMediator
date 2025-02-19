@@ -2,15 +2,15 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Gateway.Extension
+namespace Products.Common.API.Extension
 {
-    internal static class AuthConfigExtension
+    public static class AuthConfigExtension
     {
         private static readonly string _authorityConfigKey = "Authentication:Authority";
         private static readonly string _issuerSigningConfigKey = "Authentication:IssuerSigningKey";
         private static readonly string _audienceConfigKey = "Authentication:Audience";
 
-        internal static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
+        public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
         {
             if (!IsAuthAvailable(configuration))
                 return services;
@@ -33,16 +33,10 @@ namespace Gateway.Extension
                     };
                 });
 
+
             services.AddAuthorization();
 
             return services;
-        }
-
-        private static string GetEnvValueOrDefault(string envName, string defaultValue)
-        {
-            var envValue = Environment.GetEnvironmentVariable(envName);
-
-            return string.IsNullOrWhiteSpace(envValue) ? defaultValue : envValue;
         }
 
         public static IApplicationBuilder ConfigureAuthentication(this IApplicationBuilder app, IConfiguration configuration)
@@ -54,6 +48,13 @@ namespace Gateway.Extension
             }
 
             return app;
+        }
+
+        private static string GetEnvValueOrDefault(string envName, string defaultValue)
+        {
+            var envValue = Environment.GetEnvironmentVariable(envName);
+
+            return string.IsNullOrWhiteSpace(envValue) ? defaultValue : envValue;
         }
 
         private static bool IsAuthAvailable(IConfiguration configuration)

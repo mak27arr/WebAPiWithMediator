@@ -1,10 +1,10 @@
 ﻿using Serilog;
 
-namespace WebAPI.ProductAPI.Extension
+namespace Products.Common.API.Extension
 {
-    internal static class LoggingExtensions
+    public static class LoggingExtensions
     {
-        internal static void ConfigureSerilog(this WebApplicationBuilder builder)
+        public static void ConfigureSerilog(this WebApplicationBuilder builder)
         {
             string logDirectory = InitAndGetLogDirPath();
 
@@ -16,7 +16,7 @@ namespace WebAPI.ProductAPI.Extension
             builder.Host.UseSerilog();
         }
 
-        internal static string InitAndGetLogDirPath()
+        private static string InitAndGetLogDirPath()
         {
             var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
             if (!Directory.Exists(logDirectory))
