@@ -1,6 +1,7 @@
 using Gateway.Extension;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Products.Common.API.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();

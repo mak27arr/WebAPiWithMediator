@@ -4,8 +4,9 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 COPY Gateway/Gateway/Gateway.csproj Gateway/
+COPY NuGet.Config /root/.nuget/NuGet.Config
 
-RUN dotnet restore Gateway/Gateway.csproj
+RUN dotnet restore Gateway/Gateway.csproj --configfile /root/.nuget/NuGet.Config
 
 COPY Gateway/ .
 

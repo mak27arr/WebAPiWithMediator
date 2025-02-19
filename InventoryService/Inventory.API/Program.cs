@@ -1,5 +1,7 @@
 using Inventory.API.Extension;
 using Inventory.Application.Extensions;
+using Products.Common.API.Extension;
+using Products.Common.API.Middleware;
 
 //Almost all to package
 var builder = WebApplication.CreateBuilder(args);
@@ -23,13 +25,13 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
     scope.ApplyApplicationMaintenanceJobs();
 
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCustomSwagger();
 
-//app.ConfigureHttpsRedirection(builder.Configuration);
+app.ConfigureHttpsRedirection(builder.Configuration);
 
-//app.UseCors("AllowAnyOrigin");
+app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
 //app.ConfigureAuthentication(app.Configuration);

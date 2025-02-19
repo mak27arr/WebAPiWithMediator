@@ -1,5 +1,5 @@
-using JwtAuthAPI.Extension;
 using JwtAuthManager.Extension;
+using Products.Common.API.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();

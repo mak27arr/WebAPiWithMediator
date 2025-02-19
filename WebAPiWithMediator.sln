@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{78337E5A-AFC6-4A6C-AF78-458F2E72F661}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{FD623928-A3C0-4565-AC71-9C7B785D8609}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{69695BD5-7E14-4AB0-BD47-4A8DF7753347}"
@@ -63,6 +61,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Application", "InventoryService\Inventory.Application\Inventory.Application.csproj", "{11F3F12D-20F0-4ECB-BBF8-83D8698368E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Common.API", "Common\Products.Common.API\Products.Common.API.csproj", "{95B6499E-10F1-457B-AB74-CD7C63130CC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{CF5460BC-753D-47D7-BC1C-F806655D7233}"
+	ProjectSection(SolutionItems) = preProject
+		Auth\docker\Dockerfile = Auth\docker\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +151,7 @@ Global
 		{E58513BC-25C8-40C7-8435-CB3F19824706} = {6B22E6F6-A3EF-496A-8671-980C29E3D410}
 		{11F3F12D-20F0-4ECB-BBF8-83D8698368E3} = {6B22E6F6-A3EF-496A-8671-980C29E3D410}
 		{95B6499E-10F1-457B-AB74-CD7C63130CC0} = {FD623928-A3C0-4565-AC71-9C7B785D8609}
+		{CF5460BC-753D-47D7-BC1C-F806655D7233} = {04CE2FAF-BA56-4515-A3A9-4534C1364514}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C24CEB32-C61F-4324-8C4F-0833793DA693}

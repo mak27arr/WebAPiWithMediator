@@ -5,8 +5,9 @@ WORKDIR /src
 
 COPY Auth/JwtAuthAPI/JwtAuthAPI.csproj JwtAuthAPI/
 COPY Auth/JwtAuthManager/JwtAuthManager.csproj JwtAuthManager/
+COPY NuGet.Config /root/.nuget/NuGet.Config
 
-RUN dotnet restore JwtAuthAPI/JwtAuthAPI.csproj
+RUN dotnet restore JwtAuthAPI/JwtAuthAPI.csproj --configfile /root/.nuget/NuGet.Config
 
 COPY Auth/ .
 

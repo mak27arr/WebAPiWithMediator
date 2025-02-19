@@ -1,5 +1,7 @@
-using WebAPI.ProductAPI.Extension;
+using Products.Common.API.Extension;
+using Products.Common.API.Middleware;
 using WebAPI.Core.Extensions;
+using WebAPI.ProductAPI.Extension;
 using WebAPI.ProductAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
