@@ -26,6 +26,7 @@
     <PackageReference Include="Products.Common" Version="1.0.0" />
     <PackageReference Include="Products.Common.API" Version="1.0.3" />
     <PackageReference Include="Products.Common.Auth" Version="1.0.3" />
+    <PackageReference Include="Products.Common.Type" Version="1.0.3" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />

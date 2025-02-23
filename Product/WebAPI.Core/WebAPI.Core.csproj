@@ -10,6 +10,7 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="OneOf" Version="3.0.271" />
+    <PackageReference Include="Products.Common.Type" Version="1.0.3" />
   </ItemGroup>
 <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">

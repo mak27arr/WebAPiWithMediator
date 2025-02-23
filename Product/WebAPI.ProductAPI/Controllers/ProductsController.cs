@@ -24,9 +24,15 @@ namespace WebAPI.ProductAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
-            return Ok(await _mediator.Send(new GetAllProductsQuery()));
+            var query = new GetPaginatedProductsQuery
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+
+            return Ok(await _mediator.Send(query));
         }
 
         [AllowAnonymous]

@@ -1,6 +1,7 @@
 ﻿using WebAPI.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Infrastructure.Models;
+using Products.Common.Type.Page;
 
 namespace WebAPI.Infrastructure.Data
 {
@@ -16,6 +17,21 @@ namespace WebAPI.Infrastructure.Data
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await _context.Products.OrderBy(x => x.Id).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetPaginatedProductsAsync(int pageIndex, int pageSize)
+        {
+            var items = await _context.Products.AsQueryable()
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return items;
+        }
+
+        public async Task<int> GetPageCountAsync(int pageSize)
+        {
+            return (int) Math.Ceiling((double)await _context.Products.AsQueryable().CountAsync() / pageSize);
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
