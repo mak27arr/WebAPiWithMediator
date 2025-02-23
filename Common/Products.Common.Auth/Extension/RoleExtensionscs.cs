@@ -6,7 +6,7 @@ namespace Products.Common.Auth.Extension
     {
         public static string ToRoleString(this UserRoles roles)
         {
-            var role = Enum.GetValues<UserRoles>().Where(role => roles.HasFlag(role);
+            var role = Enum.GetValues<UserRoles>().Where(role => roles.HasFlag(role));
            return string.Join(",", role);
         }
     }
