@@ -1,7 +1,7 @@
 services:
   webapi:
     image: webapi_product
-    container_name: webapi_product
+    container_name: ${PRODUCT_SERVICE_CONTAINER}
     build:
         context: .
         dockerfile: ./Product/docker/Dockerfile
@@ -113,7 +113,7 @@ services:
     container_name: kafka
     restart: always
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:9092"
     environment:
       KAFKA_ENABLE_KRAFT: "yes"
       KAFKA_CFG_NODE_ID: "1"
