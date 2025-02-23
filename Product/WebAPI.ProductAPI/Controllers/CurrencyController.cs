@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Products.Common.Auth.Role;
 using WebAPI.Core.Commands.CurrencyCommands;
 using WebAPI.Core.Queries.CurrenciesQueries;
 
@@ -10,6 +11,7 @@ namespace WebAPI.ProductAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
+    [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]
     public class CurrencyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,6 +21,7 @@ namespace WebAPI.ProductAPI.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllCurrencies()
         {
@@ -27,7 +30,6 @@ namespace WebAPI.ProductAPI.Controllers
             return Ok(currencies);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddCurrency([FromBody] AddCurrencyCommand command)
         {

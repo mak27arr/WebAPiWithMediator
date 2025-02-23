@@ -5,12 +5,14 @@ using WebAPI.Core.Queries.ProductQueries;
 using Microsoft.AspNetCore.Authorization;
 using Asp.Versioning;
 using WebAPI.Core.DTOs;
+using Products.Common.Auth.Role;
 
 namespace WebAPI.ProductAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,12 +22,14 @@ namespace WebAPI.ProductAPI.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
             return Ok(await _mediator.Send(new GetAllProductsQuery()));
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
@@ -37,7 +41,7 @@ namespace WebAPI.ProductAPI.Controllers
             return Ok(product);
         }
 
-        [Authorize]
+        
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> AddProduct(CreateProductCommand command)
         {
@@ -46,7 +50,6 @@ namespace WebAPI.ProductAPI.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
 
-        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, UpdateProductCommand command)
         {
@@ -56,7 +59,6 @@ namespace WebAPI.ProductAPI.Controllers
             return updateResult.Match<IActionResult>(success => NoContent(), notFound => NotFound());
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

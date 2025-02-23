@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Products.Common.Auth.Role;
 using WebAPI.Core.Commands.Products.PriceCommands;
 
 namespace WebAPI.ProductAPI.Controllers
@@ -9,6 +10,7 @@ namespace WebAPI.ProductAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
+    [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]
     public class ProductPriceController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,7 +20,6 @@ namespace WebAPI.ProductAPI.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
         [HttpPost("{productId}/price")]
         public async Task<IActionResult> AddProductPrice(int productId, [FromBody] AddProductPriceCommand command)
         {
