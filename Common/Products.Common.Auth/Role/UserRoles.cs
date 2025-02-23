@@ -1,12 +1,11 @@
 ﻿namespace Products.Common.Auth.Role
 {
-    [Flags]
-    public enum UserRoles
+    public class UserRoles
     {
-        None = 0,
-        User = 1 << 0,
-        Manager = 1 << 1,
-        Logistics = 1 << 2,
-        Admin = 1 << 3
+        public const string None = "None";
+        public const string User = "User";
+        public const string Manager = "Manager";
+        public const string Logistics = "Logistics";
+        public const string Admin = "Admin";
     }
 }
