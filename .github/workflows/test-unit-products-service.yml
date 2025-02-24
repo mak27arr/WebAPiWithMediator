@@ -22,13 +22,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore ProductService/Tests/WebAPI.Tests.csproj
+        run: dotnet restore ProductService/Tests/Products.Tests.csproj
 
       - name: Build project
-        run: dotnet build ProductService/Tests/WebAPI.Tests.csproj --configuration Release --no-restore
+        run: dotnet build ProductService/Tests/Products.Tests.csproj --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test ProductService/Tests/WebAPI.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test ProductService/Tests/Products.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
         
       - name: Upload test results
         uses: actions/upload-artifact@v4

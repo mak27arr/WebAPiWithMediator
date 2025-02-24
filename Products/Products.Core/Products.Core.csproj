@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="OneOf" Version="3.0.271" />
+    <PackageReference Include="Products.Common.Type" Version="1.0.3" />
+  </ItemGroup>
+<ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Products.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+<ItemGroup>
+  <ProjectReference Include="..\Products.Infrastructure\Products.Infrastructure.csproj" />
+</ItemGroup>
+
+</Project>

@@ -4,7 +4,7 @@ services:
     container_name: ${PRODUCT_SERVICE_CONTAINER}
     build:
         context: .
-        dockerfile: ./Product/docker/Dockerfile
+        dockerfile: ./Products/docker/Dockerfile
     networks:
       - webapp-network
     env_file:
