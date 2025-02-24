@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Products.Core.Commands.Products;
-using Products.Infrastructure.Repository;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.Products
 {

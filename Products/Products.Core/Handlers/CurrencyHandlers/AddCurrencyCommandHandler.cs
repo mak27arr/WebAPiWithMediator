@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Products.Infrastructure.Repository;
 using Products.Core.Commands.CurrencyCommands;
 using Products.Infrastructure.Models;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.CurrencyHandlers
 {

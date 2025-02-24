@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Products.Core.Commands.Products.PriceCommands;
-using Products.Infrastructure.Repository;
 using Products.Infrastructure.Models;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.Products.PriceHandlers
 {

@@ -3,7 +3,7 @@ using MediatR;
 using OneOf;
 using OneOf.Types;
 using Products.Core.Commands.Products;
-using Products.Infrastructure.Repository;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.Products
 {

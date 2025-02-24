@@ -1,6 +1,6 @@
 ﻿using Products.Infrastructure.Models;
 
-namespace Products.Infrastructure.Repository
+namespace Products.Infrastructure.Interfaces.Repository
 {
     public interface IProductRepository
     {

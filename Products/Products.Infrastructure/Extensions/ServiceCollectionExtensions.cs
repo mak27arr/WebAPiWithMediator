@@ -2,7 +2,9 @@
 using Products.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Products.Infrastructure.Repository;
+using Products.Infrastructure.Caching;
+using Products.Infrastructure.Interfaces.Repository;
+using Products.Infrastructure.Interfaces.Caching;
 
 namespace Products.Infrastructure.Extensions
 {
@@ -12,16 +14,31 @@ namespace Products.Infrastructure.Extensions
         {
             services.AddDataContextServices(configuration);
             services.AddRepositories();
+            services.AddCacheServices();
             return services;
         }
 
-        public static IServiceCollection AddDataContextServices(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddCacheServices(this IServiceCollection services)
+        {
+            services.AddSingleton<RedisCacheConfiguration>();
+            services.AddSingleton(sp =>
+            {
+                var redisConfig = sp.GetRequiredService<RedisCacheConfiguration>();
+                return redisConfig.GetConnection();
+            });
+
+            services.AddSingleton(typeof(ICacheService<>), typeof(GenericCacheService<>));
+
+            return services;
+        }
+
+        private static IServiceCollection AddDataContextServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DataContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             return services;
         }
 
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();

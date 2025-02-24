@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using Products.Infrastructure.Repository;
 using Products.Core.Commands.Products;
 using Products.Core.DTOs;
 using Products.Infrastructure.Models;
 using AutoMapper;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.Products
 {

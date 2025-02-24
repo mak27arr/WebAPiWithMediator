@@ -3,7 +3,7 @@ using MediatR;
 using Products.Common.Type.Page;
 using Products.Core.DTOs;
 using Products.Core.Queries.ProductQueries;
-using Products.Infrastructure.Repository;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.Products
 {

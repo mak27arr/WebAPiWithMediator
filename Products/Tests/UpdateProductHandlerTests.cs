@@ -1,11 +1,11 @@
 ﻿using Moq;
 using Xunit;
-using Products.Infrastructure.Repository;
 using OneOf.Types;
 using AutoMapper;
 using Products.Core.Handlers.Products;
 using Products.Core.Commands.Products;
 using Products.Infrastructure.Models;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Tests
 {

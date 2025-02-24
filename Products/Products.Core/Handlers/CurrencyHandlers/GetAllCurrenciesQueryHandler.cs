@@ -2,7 +2,7 @@
 using MediatR;
 using Products.Core.DTOs;
 using Products.Core.Queries.CurrenciesQueries;
-using Products.Infrastructure.Repository;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Core.Handlers.CurrencyHandlers
 {

@@ -1,6 +1,6 @@
-﻿using Products.Infrastructure.Repository;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Products.Infrastructure.Models;
+using Products.Infrastructure.Interfaces.Repository;
 
 namespace Products.Infrastructure.Data
 {
