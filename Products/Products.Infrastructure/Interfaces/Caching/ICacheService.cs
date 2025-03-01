@@ -2,10 +2,12 @@
 {
     public interface ICacheService<T> where T : class
     {
-        Task SetCacheAsync(string key, IEnumerable<T> value, TimeSpan? expiry = null);
+        Task SetCacheAsync(string key, T value, TimeSpan? expiry = null);
 
-        Task<IEnumerable<T>?> GetCacheAsync(string key);
+        Task<T> GetCacheAsync(string key);
 
         Task InvalidateCacheAsync();
+
+        Task InvalidateCacheForTypeAsync(Type type);
     }
 }

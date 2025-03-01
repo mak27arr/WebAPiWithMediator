@@ -12,27 +12,27 @@ namespace Products.Infrastructure.Caching
         private readonly IDatabase _cache;
         private readonly ILogger _loger;
         private readonly string _redisPrefix;
+        private readonly int BatchSize = 1000;
 
-        public GenericCacheService(ILogger loger, RedisCacheConfiguration redisCacheConfiguration)
+        public GenericCacheService(ILogger<GenericCacheService<T>> loger, RedisCacheConfiguration redisCacheConfiguration)
         {
             _connection = redisCacheConfiguration.GetConnection();
             _cache = _connection.GetDatabase();
             _loger = loger;
-            var cacheValueType = typeof(T);
-            _redisPrefix = $"{cacheValueType.Namespace}.{cacheValueType.Name}";
+            _redisPrefix = GetPrefixForType(typeof(T));
         }
 
-        public async Task<IEnumerable<T>?> GetCacheAsync(string key)
+        public async Task<T> GetCacheAsync(string key)
         {
             var cachedData = await _cache.StringGetAsync(GetRedisKey(key));
 
             if (string.IsNullOrWhiteSpace(cachedData))
                 return default;
 
-            return JsonSerializer.Deserialize<List<T>>(cachedData);
+            return JsonSerializer.Deserialize<T>(cachedData);
         }
 
-        public async Task SetCacheAsync(string key, IEnumerable<T> value, TimeSpan? expiry = null)
+        public async Task SetCacheAsync(string key, T value, TimeSpan? expiry = null)
         {
             var serializedData = JsonSerializer.Serialize(value);
             await _cache.StringSetAsync(GetRedisKey(key), serializedData, expiry);
@@ -40,20 +40,29 @@ namespace Products.Infrastructure.Caching
 
         public async Task InvalidateCacheAsync()
         {
-            const int batchSize = 1000;
-            var keysBatch = ArrayPool<RedisKey>.Shared.Rent(batchSize);
+            await InvalidateCacheForKeyAsync(_redisPrefix);
+        }
+
+        public async Task InvalidateCacheForTypeAsync(Type type)
+        {
+            var redisPrefix = GetPrefixForType(type);
+            await InvalidateCacheForKeyAsync(redisPrefix);
+        }
+
+        private async Task InvalidateCacheForKeyAsync(string redisPrefix)
+        {
+            var keysBatch = ArrayPool<RedisKey>.Shared.Rent(BatchSize);
 
             foreach (var endpoint in _connection.GetEndPoints())
             {
                 var server = _connection.GetServer(endpoint);
-                var keys = server.KeysAsync(pattern: _redisPrefix + "*");
                 var index = 0;
 
-                await foreach (var key in server.KeysAsync(pattern: _redisPrefix + "*"))
+                await foreach (var key in server.KeysAsync(pattern: redisPrefix + "*"))
                 {
                     keysBatch[index++] = key;
 
-                    if (index >= batchSize)
+                    if (index >= BatchSize)
                     {
                         await _cache.KeyDeleteAsync(keysBatch);
                         index = 0;
@@ -65,6 +74,11 @@ namespace Products.Infrastructure.Caching
             }
 
             ArrayPool<RedisKey>.Shared.Return(keysBatch);
+        }
+
+        private string GetPrefixForType(Type type)
+        {
+            return $"{type.Namespace}.{type.Name}";
         }
 
         private RedisKey GetRedisKey(string key)

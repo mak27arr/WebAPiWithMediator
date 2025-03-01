@@ -4,7 +4,7 @@ using Products.Core.DTOs;
 using Products.Core.Queries.ProductQueries;
 using Products.Infrastructure.Interfaces.Repository;
 
-namespace Products.Core.Handlers.Products
+namespace Products.Core.Handlers.Products.Query
 {
     internal class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, IEnumerable<ProductDTO>>
     {

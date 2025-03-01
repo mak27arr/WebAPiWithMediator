@@ -21,6 +21,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
   inventoryService:
     image: inventory_service
     container_name: inventory_service
@@ -62,6 +64,27 @@ services:
       - webapi
     networks:
       - webapp-network
+  auth:
+    image: webapi_auth
+    container_name: webapi_auth
+    build:
+        context: .
+        dockerfile: ./Auth/docker/Dockerfile
+    networks:
+      - webapp-network
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_Auth_DB};Username=${POSTGRES_Auth_USER};Password=${POSTGRES_Auth_PASSWORD}
+      - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
+      - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
+      - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
+    ports:
+      - "5010:5010"
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -88,33 +111,14 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-  auth:
-    image: webapi_auth
-    container_name: webapi_auth
-    build:
-        context: .
-        dockerfile: ./Auth/docker/Dockerfile
-    networks:
-      - webapp-network
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_Auth_DB};Username=${POSTGRES_Auth_USER};Password=${POSTGRES_Auth_PASSWORD}
-      - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
-      - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
-      - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
-    ports:
-      - "5010:5010"
-    depends_on:
-      postgres:
-        condition: service_healthy
   kafka:
     image: bitnami/kafka:latest
     container_name: kafka
     restart: always
     ports:
       - "${KAFKA_PORT}:9092"
+    networks:
+      - webapp-network
     environment:
       KAFKA_ENABLE_KRAFT: "yes"
       KAFKA_CFG_NODE_ID: "1"
@@ -123,6 +127,28 @@ services:
       KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
       KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+  redis:
+    image: redis:latest
+    container_name: ${REDIS_SERVICE_CONTAINER}
+    restart: always
+    ports:
+      - "${REDIS_SERVICE_PORT}:6379"
+    networks:
+      - webapp-network
+    volumes:
+      - redis_data:/data
+      - ./scripts/postgres/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 networks:
   webapp-network:
     driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

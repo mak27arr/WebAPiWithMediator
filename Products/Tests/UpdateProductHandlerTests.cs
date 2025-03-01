@@ -2,10 +2,10 @@
 using Xunit;
 using OneOf.Types;
 using AutoMapper;
-using Products.Core.Handlers.Products;
 using Products.Core.Commands.Products;
 using Products.Infrastructure.Models;
 using Products.Infrastructure.Interfaces.Repository;
+using Products.Core.Handlers.Products.Commands;
 
 namespace Products.Tests
 {

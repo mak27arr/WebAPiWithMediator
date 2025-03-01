@@ -54,7 +54,7 @@ namespace Products.Infrastructure.Data
             return product;
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(int id)
         {
             var product = await _context.Products.FindAsync(id);
 
@@ -62,6 +62,11 @@ namespace Products.Infrastructure.Data
             {
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

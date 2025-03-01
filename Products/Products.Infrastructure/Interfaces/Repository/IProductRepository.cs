@@ -9,7 +9,7 @@ namespace Products.Infrastructure.Interfaces.Repository
         Task<Product> GetProductByIdAsync(int id);
         Task<Product> AddProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
-        Task DeleteProductAsync(int id);
+        Task<bool> DeleteProductAsync(int id);
         Task<int> GetPageCountAsync(int pageSize);
     }
 }

@@ -83,6 +83,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Infrastructure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Core", "Products\Products.Core\Products.Core.csproj", "{0CBA9A88-90BF-473D-A78C-431031117C28}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BFB129BE-E20E-491F-8BE4-48C138E9E287}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.Config = NuGet.Config
+		scripts\redis\redis.conf = scripts\redis\redis.conf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

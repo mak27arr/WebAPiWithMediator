@@ -4,17 +4,21 @@ using Products.Core.DTOs;
 using Products.Infrastructure.Models;
 using AutoMapper;
 using Products.Infrastructure.Interfaces.Repository;
+using Products.Infrastructure.Interfaces.Caching;
+using Products.Common.Type.Page;
 
-namespace Products.Core.Handlers.Products
+namespace Products.Core.Handlers.Products.Commands
 {
     internal class CreateProductHandler : IRequestHandler<CreateProductCommand, ProductDTO>
     {
         private readonly IProductRepository _repository;
+        private readonly ICacheService<PagedResult<ProductDTO>> _cahce;
         private readonly IMapper _mapper;
 
-        public CreateProductHandler(IProductRepository repository, IMapper mapper)
+        public CreateProductHandler(IProductRepository repository, ICacheService<PagedResult<ProductDTO>> cahce, IMapper mapper) 
         {
             _repository = repository;
+            _cahce = cahce;
             _mapper = mapper;
         }
 
@@ -26,6 +30,8 @@ namespace Products.Core.Handlers.Products
             };
 
             var createdProduct = await _repository.AddProductAsync(product);
+            await _cahce.InvalidateCacheAsync();
+
             return _mapper.Map<ProductDTO>(createdProduct);
         }
     }
