@@ -23,15 +23,20 @@ jobs:
         with:
           dotnet-version: '8.0'
           
-      - name: Authenticate with GitHub Packages
+      - name: Create NuGet config with GitHub Packages credentials
         run: |
-          dotnet nuget add source "https://nuget.pkg.github.com/mak27arr/index.json" \
-            --name github \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }} \
-            --store-password-in-clear-text
-        env:
-          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo '<?xml version="1.0" encoding="utf-8"?>' > nuget.config
+          echo '<configuration>' >> nuget.config
+          echo '  <packageSources>' >> nuget.config
+          echo '    <add key="github" value="https://nuget.pkg.github.com/mak27arr/index.json" />' >> nuget.config
+          echo '  </packageSources>' >> nuget.config
+          echo '  <packageSourceCredentials>' >> nuget.config
+          echo '    <github>' >> nuget.config
+          echo "      <add key=\"Username\" value=\"${{ github.actor }}\" />" >> nuget.config
+          echo "      <add key=\"ClearTextPassword\" value=\"${{ secrets.GITHUB_TOKEN }}\" />" >> nuget.config
+          echo '    </github>' >> nuget.config
+          echo '  </packageSourceCredentials>' >> nuget.config
+          echo '</configuration>' >> nuget.config
           
       - name: Restore dependencies
         run: dotnet restore Common/Products.Common/Products.Common.csproj
