@@ -2,6 +2,6 @@
 {
     public class InventoryReservedEvent
     {
-        public Guid OrderId { get; }
+        public Guid OrderId { get; init; }
     }
 }

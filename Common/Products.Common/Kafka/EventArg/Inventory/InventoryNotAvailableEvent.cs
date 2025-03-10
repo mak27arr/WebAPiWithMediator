@@ -2,6 +2,6 @@
 {
     public class InventoryNotAvailableEvent
     {
-        public Guid OrderId { get; }
+        public Guid OrderId { get; init; }
     }
 }
