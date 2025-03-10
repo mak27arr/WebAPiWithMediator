@@ -1,9 +1,11 @@
 ﻿using Inventory.Domain.Interface.Repository;
+using Inventory.Infrastructure.Kafka;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Products.Common.Kafka;
 
 namespace Inventory.Infrastructure.Extensions
 {
@@ -13,6 +15,7 @@ namespace Inventory.Infrastructure.Extensions
         {
             services.AddDbContext(configuration);
             services.AddRepositories();
+            services.AddSingleton<IKafkaProducer, KafkaProducer>();
             return services;
         }
 

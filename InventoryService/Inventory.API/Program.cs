@@ -11,6 +11,7 @@ builder.ConfigureSerilog();
 builder.WebHost.ConfigureKestrelSettings(builder.Configuration);
 
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddCommunicationServices();
 builder.Services.AddCustomCors();
 
 builder.Services.ConfigureSwagger();

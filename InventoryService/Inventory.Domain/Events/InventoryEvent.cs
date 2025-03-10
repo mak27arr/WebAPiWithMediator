@@ -10,6 +10,10 @@
 
         public string? Action { get; set; }
 
+        public string? ReferenceId { get; set; }
+
+        public EventReferenceType ReferenceType { get; set; }
+
         public DateTime? Timestamp { get; set; }
     }
 }

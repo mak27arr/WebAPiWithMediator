@@ -1,9 +1,10 @@
-﻿using Inventory.Domain.Events;
+﻿using Inventory.Application.Features.Inventory.Commands;
+using Inventory.Domain.Events;
 using Inventory.Domain.Interface.Repository;
 using Inventory.Domain.ValueObjects;
 using MediatR;
 
-namespace Inventory.Application.Features.Inventory.Commands
+namespace Inventory.Application.Features.Inventory.Handlers
 {
     internal class RemoveProductFromInventoryCommandHandler : IRequestHandler<RemoveProductFromInventoryCommand, bool>
     {
@@ -39,7 +40,9 @@ namespace Inventory.Application.Features.Inventory.Commands
                 {
                     ProductId = request.ProductId,
                     Quantity = request.Quantity,
-                    Action = "Remove",
+                    Action = InventoryAction.Remove,
+                    ReferenceId = request.ReferenceId,
+                    ReferenceType = request.ReferenceType,
                     Timestamp = DateTime.UtcNow
                 };
                 await _eventStoreRepository.AddEventAsync(inventoryEvent);

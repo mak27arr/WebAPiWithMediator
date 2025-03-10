@@ -41,7 +41,9 @@ namespace Inventory.Application.Features.Inventory.Handlers
                 {
                     ProductId = request.ProductId,
                     Quantity = request.Quantity,
-                    Action = "Add",
+                    Action = InventoryAction.Add,
+                    ReferenceId = request.ReferenceId,
+                    ReferenceType = request.ReferenceType,
                     Timestamp = DateTime.UtcNow
                 };
                 await _eventStoreRepository.AddEventAsync(inventoryEvent);
