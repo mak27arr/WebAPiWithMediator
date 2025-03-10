@@ -17,7 +17,7 @@ services:
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
       - REDIS__CONNECTIONSTRING=${REDIS__CONNECTIONSTRING} 
     ports:
-      - "5000:5000"
+      - "${PRODUCT__PORT}:5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -25,7 +25,7 @@ services:
         condition: service_healthy
   inventoryService:
     image: inventory_service
-    container_name: inventory_service
+    container_name: ${INVENTORY_SERVICE_CONTAINER}
     build:
         context: .
         dockerfile: ./InventoryService/docker/Dockerfile
@@ -40,7 +40,30 @@ services:
       - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
     ports:
-      - "5020:5020"
+      - "${INVENTORY__PORT}:5020"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  OrderService:
+    image: order_service
+    container_name: ${ORDER_SERVICE_CONTAINER}
+    build:
+        context: .
+        dockerfile: ./OrderService/docker/Dockerfile
+    networks:
+      - webapp-network
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTIONSTRINGS__DEFAULTCONNECTION=Host=postgres_db;Port=5432;Database=${POSTGRES__ORDERSERVICE__DB};Username=${POSTGRES__ORDERSERVICE__USER};Password=${POSTGRES__ORDERSERVICE__PASSWORD}
+      - KAFKA__HOST=${KAFKA__HOST}
+      - KAFKA__PORT=${KAFKA__PORT}
+      - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
+      - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
+      - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
+    ports:
+      - "${ORDERSERVICE__PORT}:5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,7 +89,7 @@ services:
       - webapp-network
   auth:
     image: webapi_auth
-    container_name: webapi_auth
+    container_name: ${AUTH_CONTAINER}
     build:
         context: .
         dockerfile: ./Auth/docker/Dockerfile
@@ -76,12 +99,12 @@ services:
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_Auth_DB};Username=${POSTGRES_Auth_USER};Password=${POSTGRES_Auth_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_AUTH_DB};Username=${POSTGRES_AUTH_USER};Password=${POSTGRES_AUTH_PASSWORD}
       - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
       - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
     ports:
-      - "5010:5010"
+      - "${AUTH__PORT}:5010"
     depends_on:
       postgres:
         condition: service_healthy
@@ -100,6 +123,9 @@ services:
       POSTGRES__INVENTORYSERVICE__USER: ${POSTGRES__INVENTORYSERVICE__USER}
       POSTGRES__INVENTORYSERVICE__PASSWORD: ${POSTGRES__INVENTORYSERVICE__PASSWORD}
       POSTGRES__INVENTORYSERVICE__DB: ${POSTGRES__INVENTORYSERVICE__DB}
+      POSTGRES__ORDERSERVICE__USER: ${POSTGRES__ORDERSERVICE__USER}
+      POSTGRES__ORDERSERVICE__PASSWORD: ${POSTGRES__ORDERSERVICE__PASSWORD}
+      POSTGRES__ORDERSERVICE__DB: ${POSTGRES__ORDERSERVICE__DB}
     volumes:
       - ./scripts/postgres/init-multiple-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh
     ports:
@@ -111,22 +137,39 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-  kafka:
+  Kafka:
     image: bitnami/kafka:latest
-    container_name: kafka
+    container_name: ${KAFKA__HOST}
     restart: always
     ports:
-      - "${KAFKA_PORT}:9092"
+      - "${KAFKA__PORT}:9092"
     networks:
       - webapp-network
     environment:
-      KAFKA_ENABLE_KRAFT: "yes"
-      KAFKA_CFG_NODE_ID: "1"
-      KAFKA_CFG_PROCESS_ROLES: "controller,broker"
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
-      KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@localhost:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:${KAFKA__CLIENT__PORT},EXTERNAL://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://${KAFKA__HOST}:${KAFKA__CLIENT__PORT},EXTERNAL://${KAFKA__HOST}:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      - ALLOW_PLAINTEXT_LISTENER=yes
+  kafdrop:
+    platform: linux/amd64
+    image: obsidiandynamics/kafdrop
+    restart: always
+    ports:
+      - "9100:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=${KAFKA__HOST}:${KAFKA__CLIENT__PORT}
+      - JVM_OPTS=-Xms32M -Xmx64M
+    networks:
+      - webapp-network
+    depends_on:
+      - Kafka
   redis:
     image: redis:latest
     container_name: ${REDIS_SERVICE_CONTAINER}

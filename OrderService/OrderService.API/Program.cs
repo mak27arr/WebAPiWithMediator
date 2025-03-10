@@ -1,5 +1,5 @@
-using Inventory.API.Extension;
-using Inventory.Application.Extensions;
+using OrderService.API.Extension;
+using OrderService.Application.Extensions;
 using Products.Common.API.Extension;
 using Products.Common.API.Middleware;
 
