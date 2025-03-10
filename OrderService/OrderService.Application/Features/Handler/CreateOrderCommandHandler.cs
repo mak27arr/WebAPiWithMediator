@@ -3,6 +3,7 @@ using OrderService.Application.Features.Commands;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Interface.Repository;
 using Products.Common.Kafka;
+using Products.Common.Kafka.EventArg;
 
 namespace OrderService.Application.Features.CommandHandler
 {
@@ -24,14 +25,20 @@ namespace OrderService.Application.Features.CommandHandler
                 Id = Guid.NewGuid(),
                 ProductId = request.ProductId,
                 Quantity = request.Quantity,
-                UserId = request.UserId
+                UserId = request.UserId,
+                CreatedAt = DateTime.UtcNow
             };
 
             //TODO: Add price
 
             await _repository.AddAsync(order);
 
-            var orderEvent = new { OrderId = order.Id, order.ProductId, order.Quantity };
+            var orderEvent = new OrderCreatedEvent 
+            { 
+                OrderId = order.Id,
+                ProductId = order.ProductId,
+                Quantity = order.Quantity 
+            };
             await _producer.ProduceAsync(KafkaOrderTopics.OrderCreated, orderEvent);
 
             return order.Id;

@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
     <PackageReference Include="OneOf" Version="3.0.271" />
-    <PackageReference Include="Products.Common" Version="1.0.6" />
+    <PackageReference Include="Products.Common" Version="1.0.11" />
     <PackageReference Include="Products.Common.API" Version="1.0.3" />
     <PackageReference Include="Products.Common.Auth" Version="1.0.3" />
     <PackageReference Include="Products.Common.Type" Version="1.0.3" />

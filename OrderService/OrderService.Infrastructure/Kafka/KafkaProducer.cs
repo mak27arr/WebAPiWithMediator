@@ -19,7 +19,7 @@ namespace OrderService.Infrastructure.Kafka
         {
             var kafkaHost = configuration.GetSection("Kafka:Host").Value;
             var kafkaPort = configuration.GetSection("Kafka:Port").Value;
-            Console.WriteLine($"{kafkaHost}:{kafkaPort}");
+
             return new ProducerConfig { BootstrapServers = $"{kafkaHost}:{kafkaPort}" };
         }
 

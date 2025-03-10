@@ -18,6 +18,7 @@ namespace OrderService.Infrastructure.Persistence
             modelBuilder.Entity<Order>().HasKey(o => o.Id);
             modelBuilder.Entity<Order>().Property(o => o.ProductId).IsRequired();
             modelBuilder.Entity<Order>().Property(o => o.Quantity).IsRequired();
+            modelBuilder.Entity<Order>().Property(o => o.Status).HasDefaultValue(OrderStatus.Pending);
         }
     }
 }

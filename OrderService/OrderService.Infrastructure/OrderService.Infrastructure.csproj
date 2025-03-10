@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
-    <PackageReference Include="Products.Common" Version="1.0.6" />
+    <PackageReference Include="Products.Common" Version="1.0.11" />
   </ItemGroup>
 
   <ItemGroup>
