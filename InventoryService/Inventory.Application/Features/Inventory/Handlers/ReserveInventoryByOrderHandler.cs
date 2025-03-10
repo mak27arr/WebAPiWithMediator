@@ -8,7 +8,7 @@ using Products.Common.Kafka.EventArg.Inventory;
 
 namespace Inventory.Application.Features.Inventory.Handlers
 {
-    public class ReserveInventoryByOrderHandler : IRequestHandler<ReserveInventoryByOrderCommand>
+    internal class ReserveInventoryByOrderHandler : IRequestHandler<ReserveInventoryByOrderCommand>
     {
         private readonly IKafkaProducer _kafkaProducer;
         private readonly ILogger<ReserveInventoryByOrderHandler> _logger;

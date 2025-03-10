@@ -1,12 +1,11 @@
 ﻿using Inventory.Application.Features.Inventory.Commands;
 using Inventory.Domain.Events;
 using Inventory.Domain.Interface.Repository;
-using Inventory.Domain.ValueObjects;
 using MediatR;
 
 namespace Inventory.Application.Features.Inventory.Handlers
 {
-    public class ReserveInventoryHandler : IRequestHandler<ReserveInventoryCommand>
+    internal class ReserveInventoryHandler : IRequestHandler<ReserveInventoryCommand>
     {
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IEventStoreRepository _eventStoreRepository;

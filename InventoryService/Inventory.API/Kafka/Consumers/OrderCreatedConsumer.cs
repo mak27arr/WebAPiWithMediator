@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Inventory.Application.Features.Inventory.Commands;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Products.Common.Kafka;
 using Products.Common.Kafka.EventArg;
@@ -9,14 +10,16 @@ namespace Inventory.API.Kafka.Consumers
 {
     public class OrderCreatedConsumer : BackgroundService
     {
-        private readonly IMediator _mediator;
         private readonly IConfiguration _config;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<OrderCreatedConsumer> _logger;
 
-        public OrderCreatedConsumer(IMediator mediator, IConfiguration config,ILogger<OrderCreatedConsumer> logger)
+        public OrderCreatedConsumer(IServiceScopeFactory serviceScopeFactory,
+            IConfiguration config,
+            ILogger<OrderCreatedConsumer> logger)
         {
-            _mediator = mediator;
             _config = config;
+            _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
         }
 
@@ -41,8 +44,11 @@ namespace Inventory.API.Kafka.Consumers
                         _logger.LogInformation($"Received order event: {message}");
 
                         var order = JsonConvert.DeserializeObject<OrderCreatedEvent>(message);
-
-                        await _mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
+                        using (var scope = _serviceScopeFactory.CreateScope())
+                        {
+                            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                            await mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
+                        }
                     }
                     catch (ConsumeException ex)
                     {
@@ -64,10 +70,12 @@ namespace Inventory.API.Kafka.Consumers
         {
             var kafkaHost = configuration.GetSection("Kafka:Host").Value;
             var kafkaPort = configuration.GetSection("Kafka:Port").Value;
+            var GroupId = configuration.GetSection("Kafka:GroupId").Value;
 
             return new ConsumerConfig
             {
                 BootstrapServers = $"{kafkaHost}:{kafkaPort}",
+                GroupId = GroupId,
                 AutoOffsetReset = AutoOffsetReset.Latest
             };
         }
