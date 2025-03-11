@@ -18,6 +18,14 @@ services:
       - REDIS__CONNECTIONSTRING=${REDIS__CONNECTIONSTRING} 
     ports:
       - "${PRODUCT__PORT}:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.product.rule=PathPrefix(`/api/Product`)"
+      - "traefik.http.routers.сurrency.rule=PathPrefix(`/api/Currency`)"
+      - "traefik.http.routers.productPrice.rule=PathPrefix(`/api/ProductPrice`)"
+      - "traefik.http.services.product.loadbalancer.server.port=5000"
+      - "traefik.http.services.currency.loadbalancer.server.port=5000"
+      - "traefik.http.services.productPrice.loadbalancer.server.port=5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -43,7 +51,14 @@ services:
       - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
     ports:
-      - "${INVENTORY__PORT}:5020"
+      - "${INVENTORY__PORT}:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inventory.rule=PathPrefix(`/api/inventory`)"
+      - "traefik.http.services.inventory.loadbalancer.server.port=5000"
+      - "traefik.http.routers.inventory.swagger.rule=PathPrefix(`/api/inventory/swagger/v1/swagger.json`)"
+      - "traefik.http.middlewares.inventory-stripprefix.stripprefix.prefixes=/api/inventory"
+      - "traefik.http.routers.inventory.swagger.middlewares=inventory-stripprefix"
     depends_on:
       postgres:
         condition: service_healthy
@@ -67,29 +82,34 @@ services:
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
     ports:
       - "${ORDERSERVICE__PORT}:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.order.rule=PathPrefix(`/api/order`)"
+      - "traefik.http.services.order.loadbalancer.server.port=5000"
     depends_on:
       postgres:
         condition: service_healthy
-  gateway:
-    image: ${DOCKER_REGISTRY-}gateway
-    container_name: gateway
-    build:
-      context: .
-      dockerfile: ./Gateway/docker/Dockerfile
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
-      - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
-      - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-    depends_on:
-      - webapi
-    networks:
-      - webapp-network
+  # gateway:
+  #   image: ${DOCKER_REGISTRY-}gateway
+  #   container_name: gateway
+  #   build:
+  #     context: .
+  #     dockerfile: ./Gateway/docker/Dockerfile
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - AUTHENTICATION__AUTHORITY=${AUTHENTICATION__AUTHORITY}
+  #     - AUTHENTICATION__ISSUERSIGNINGKEY=${AUTHENTICATION__ISSUERSIGNINGKEY}
+  #     - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
+  #   ports:
+  #     - "8080:8080"
+  #     - "8081:8081"
+  #   depends_on:
+  #     - webapi
+  #   networks:
+  #     - webapp-network
+  #
   auth:
     image: webapi_auth
     container_name: ${AUTH_CONTAINER}
@@ -108,6 +128,10 @@ services:
       - AUTHENTICATION__AUDIENCE=${AUTHENTICATION__AUDIENCE}
     ports:
       - "${AUTH__PORT}:5010"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=5010"
     depends_on:
       postgres:
         condition: service_healthy
@@ -190,7 +214,39 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
+  traefik:
+    image: "traefik:v2.10"
+    container_name: traefik
+    restart: always
+    ports:
+      - "${TRAEFIK_HTTP_PORT}:80"     
+      - "8081:443"
+      - "9002:8080" 
+    networks:
+      - webapp-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"  
+      - "./scripts/traefik/traefik.yml:/etc/traefik/traefik.yml"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    environment:
+      BASE_URL: "/api/swagger"
+      SWAGGER_JSON: /swagger/openapi.json
+      TRAEFIK_HTTP_PORT: ${TRAEFIK_HTTP_PORT}
+    volumes:
+      - ./scripts/swagger/openapi.json:/swagger/openapi.json
+    networks:
+      - webapp-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.swagger.rule=PathPrefix(`/api/swagger`)"
+      - "traefik.http.services.swagger.loadbalancer.server.port=8080"
 networks:
   webapp-network:
     driver: bridge

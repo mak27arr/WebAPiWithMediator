@@ -18,8 +18,7 @@ RUN dotnet publish JwtAuthAPI/JwtAuthAPI.csproj -c $BUILD_CONFIGURATION -o /app/
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
 WORKDIR /app
-EXPOSE 5010
-EXPOSE 5010
+EXPOSE 5000
 
 COPY --from=publish /app/publish .
 

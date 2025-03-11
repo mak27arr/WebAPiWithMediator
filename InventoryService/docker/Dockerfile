@@ -20,7 +20,7 @@ RUN dotnet publish Inventory.API/Inventory.API.csproj -c $BUILD_CONFIGURATION -o
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
 WORKDIR /app
-EXPOSE 5020
+EXPOSE 5000
 
 COPY --from=publish /app/publish .
 
