@@ -26,6 +26,10 @@ services:
       - "traefik.http.services.product.loadbalancer.server.port=5000"
       - "traefik.http.services.currency.loadbalancer.server.port=5000"
       - "traefik.http.services.productPrice.loadbalancer.server.port=5000"
+      - "traefik.http.routers.products-swagger.rule=PathPrefix(`/api/products/swagger/v1/swagger.json`)"
+      - "traefik.http.routers.products-swagger.service=inventory"
+      - "traefik.http.middlewares.products-stripprefix.stripprefix.prefixes=/api/products"
+      - "traefik.http.routers.products-swagger.middlewares=products-stripprefix"
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,9 +60,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.inventory.rule=PathPrefix(`/api/inventory`)"
       - "traefik.http.services.inventory.loadbalancer.server.port=5000"
-      - "traefik.http.routers.inventory.swagger.rule=PathPrefix(`/api/inventory/swagger/v1/swagger.json`)"
+      - "traefik.http.routers.inventory-swagger.rule=PathPrefix(`/api/inventory/swagger/v1/swagger.json`)"
+      - "traefik.http.routers.inventory-swagger.service=inventory"
       - "traefik.http.middlewares.inventory-stripprefix.stripprefix.prefixes=/api/inventory"
-      - "traefik.http.routers.inventory.swagger.middlewares=inventory-stripprefix"
+      - "traefik.http.routers.inventory-swagger.middlewares=inventory-stripprefix"
     depends_on:
       postgres:
         condition: service_healthy
@@ -86,6 +91,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.order.rule=PathPrefix(`/api/order`)"
       - "traefik.http.services.order.loadbalancer.server.port=5000"
+      - "traefik.http.routers.order-swagger.rule=PathPrefix(`/api/order/swagger/v1/swagger.json`)"
+      - "traefik.http.routers.order-swagger.service=order"
+      - "traefik.http.middlewares.order-stripprefix.stripprefix.prefixes=/api/order"
+      - "traefik.http.routers.order-swagger.middlewares=order-stripprefix"
     depends_on:
       postgres:
         condition: service_healthy

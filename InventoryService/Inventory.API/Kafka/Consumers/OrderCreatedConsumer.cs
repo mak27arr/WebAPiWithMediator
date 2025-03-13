@@ -25,44 +25,51 @@ namespace Inventory.API.Kafka.Consumers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("InventoryService Kafka Consumer started. Listening for new orders...");
+            await StartConsumeTask(stoppingToken);
+        }
+
+        private async Task StartConsumeTask(CancellationToken stoppingToken)
+        {
             var config = GetConfig(_config);
 
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
             consumer.Subscribe(KafkaOrderTopics.OrderCreated);
 
-            _logger.LogInformation("InventoryService Kafka Consumer started. Listening for new orders...");
-
-            try
+            var consumerTask = Task.Factory.StartNew(async () =>
             {
-                while (!stoppingToken.IsCancellationRequested)
+                try
                 {
-                    try
+                    while (!stoppingToken.IsCancellationRequested)
                     {
-                        var consumeResult = consumer.Consume(stoppingToken);
-                        var message = consumeResult.Message.Value;
-
-                        _logger.LogInformation($"Received order event: {message}");
-
-                        var order = JsonConvert.DeserializeObject<OrderCreatedEvent>(message);
-                        using (var scope = _serviceScopeFactory.CreateScope())
-                        {
-                            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                            await mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
-                        }
-                    }
-                    catch (ConsumeException ex)
-                    {
-                        _logger.LogError($"Error consuming Kafka message: {ex.Message}");
+                        var result = consumer.Consume(stoppingToken);
+                        _logger.LogInformation($"Received order event: {result}");
+                        await ProccesOrderCreatedMessage(result, stoppingToken);
+                        consumer.Commit(result);
                     }
                 }
-            }
-            catch (OperationCanceledException)
+                catch (ConsumeException ex)
+                {
+                    _logger.LogError($"Error consuming Kafka message: {ex.Message}");
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogError("Consumer stopped.");
+                }
+            }, stoppingToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+            await consumerTask;
+            consumer?.Close();
+        }
+
+        private async Task ProccesOrderCreatedMessage(ConsumeResult<Ignore, string> consumer, CancellationToken stoppingToken)
+        {
+            var message = consumer.Message.Value;
+            var order = JsonConvert.DeserializeObject<OrderCreatedEvent>(message);
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                _logger.LogInformation("Kafka consumer stopped.");
-            }
-            finally
-            {
-                consumer?.Close();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                await mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
             }
         }
 
@@ -76,7 +83,8 @@ namespace Inventory.API.Kafka.Consumers
             {
                 BootstrapServers = $"{kafkaHost}:{kafkaPort}",
                 GroupId = GroupId,
-                AutoOffsetReset = AutoOffsetReset.Latest
+                AutoOffsetReset = AutoOffsetReset.Latest,
+                EnableAutoCommit = false,
             };
         }
     }

@@ -5,17 +5,14 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/inventory": {
-      "$ref": "http://localhost:8080/api/inventory/swagger/v1/swagger.json"
+    "/api/products": {
+      "$ref": "http://localhost:8080/api/products/swagger/v1/swagger.json"
     },
     "/api/order": {
       "$ref": "http://localhost:8080/api/order/swagger/v1/swagger.json"
     },
-    "/api/products": {
-      "$ref": "http://localhost:8080/api/products/swagger/v1/swagger.json"
-    },
-    "/api/auth": {
-      "$ref": "http://localhost:8080/api/auth/swagger/v1/swagger.json"
+    "/api/inventory": {
+      "$ref": "http://localhost:8080/api/inventory/swagger/v1/swagger.json"
     }
   }
 }
