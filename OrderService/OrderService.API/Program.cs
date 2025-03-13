@@ -2,6 +2,7 @@ using OrderService.API.Extension;
 using OrderService.Application.Extensions;
 using Products.Common.API.Extension;
 using Products.Common.API.Middleware;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -32,7 +33,9 @@ app.ConfigureHttpsRedirection(builder.Configuration);
 app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
+app.UseHttpMetrics();
 app.ConfigureAuthentication(app.Configuration);
+app.MapMetrics();
 app.MapControllers();
 app.UseHealthChecks("/health");
 

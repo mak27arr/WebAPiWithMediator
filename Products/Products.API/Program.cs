@@ -3,6 +3,7 @@ using Products.Common.API.Middleware;
 using Products.Core.Extensions;
 using Products.ProductAPI.Extension;
 using Products.ProductAPI.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -33,8 +34,10 @@ app.ConfigureHttpsRedirection(builder.Configuration);
 app.UseCors("AllowAnyOrigin");
 
 app.UseRouting();
+app.UseHttpMetrics();
 app.ConfigureAuthentication(app.Configuration);
 app.MapGrpcService<ProductGrpcService>();
+app.MapMetrics();
 app.MapControllers();
 app.UseHealthChecks("/health");
 

@@ -17,6 +17,7 @@
     <PackageReference Include="Products.Common" Version="1.0.12" />
     <PackageReference Include="Products.Common.API" Version="1.0.3" />
     <PackageReference Include="Products.Common.Auth" Version="1.0.3" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
   </ItemGroup>
 
