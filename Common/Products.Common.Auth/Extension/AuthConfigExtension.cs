@@ -10,7 +10,7 @@ namespace Products.Common.Auth.Extension
     {
         private static readonly string _authorityConfigKey = "AzureAdB2C";
 
-        public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
+        public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
             if (!IsAuthAvailable(configuration))
                 return services;
