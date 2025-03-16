@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Web;
 
 namespace Products.Common.Auth.Extension
 {
     public static class AuthConfigExtension
     {
-        private static readonly string _authorityConfigKey = "AzureAdB2C";
+        private static readonly string _authorityConfigKey = "AzureAd";
 
         public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
-            if (!IsAuthAvailable(configuration))
-                return services;
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(configuration.GetSection(_authorityConfigKey));
+                .AddMicrosoftIdentityWebApi(configuration, _authorityConfigKey);
+
             services.AddAuthorization();
 
             return services;
