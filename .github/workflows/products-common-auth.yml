@@ -23,22 +23,45 @@ jobs:
         with:
           dotnet-version: '8.0'
 
+      - name: Create NuGet config with GitHub Packages credentials
+        run: |
+          echo '<?xml version="1.0" encoding="utf-8"?>' > nuget.config
+          echo '<configuration>' >> nuget.config
+          echo '  <packageSources>' >> nuget.config
+          echo '    <add key="github" value="https://nuget.pkg.github.com/mak27arr/index.json" />' >> nuget.config
+          echo '  </packageSources>' >> nuget.config
+          echo '  <packageSourceCredentials>' >> nuget.config
+          echo '    <github>' >> nuget.config
+          echo "      <add key=\"Username\" value=\"${{ github.actor }}\" />" >> nuget.config
+          echo "      <add key=\"ClearTextPassword\" value=\"${{ secrets.GITHUB_TOKEN }}\" />" >> nuget.config
+          echo '    </github>' >> nuget.config
+          echo '  </packageSourceCredentials>' >> nuget.config
+          echo '</configuration>' >> nuget.config
+
       - name: Restore dependencies
         run: dotnet restore Common/Products.Common.Auth/Products.Common.Auth.csproj
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the project
         run: dotnet build Common/Products.Common.Auth/Products.Common.Auth.csproj --configuration Release
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate version from last tag
         id: version
         run: |
           VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "1.0.0")
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pack the project (Create NuGet package)
         run: dotnet pack Common/Products.Common.Auth/Products.Common.Auth.csproj --configuration Release --output ./nupkgs --version-suffix "${{ env.VERSION }}"
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push package to GitHub Packages
         run: dotnet nuget push ./nupkgs/*.nupkg --source "https://nuget.pkg.github.com/mak27arr/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
