@@ -14,7 +14,6 @@ namespace Products.Common.Auth.Extension
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(configuration, _authorityConfigKey);
-
             services.AddAuthorization();
 
             return services;
