@@ -1,6 +1,6 @@
 ﻿namespace Products.Common.Kafka.EventArg.Inventory
 {
-    public class InventoryNotAvailableEvent
+    public class InventoryNotAvailableEvent : BaseEvent
     {
         public Guid OrderId { get; init; }
 
