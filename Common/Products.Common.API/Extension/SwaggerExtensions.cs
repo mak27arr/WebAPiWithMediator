@@ -34,17 +34,6 @@ namespace Products.Common.API.Extension
                         new string[] { }
                     }
                 });
-
-                c.DocInclusionPredicate((version, desc) =>
-                {
-                    var versions = desc.ActionDescriptor.EndpointMetadata
-                        .OfType<ApiVersionAttribute>()
-                        .SelectMany(attr => attr.Versions)
-                        .Select(v => $"v{v.ToString()}");
-                    return versions.Any(v => v == version);
-                });
-
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
 
