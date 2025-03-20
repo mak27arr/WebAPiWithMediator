@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -33,6 +34,18 @@ namespace Products.Common.API.Extension
                         new string[] { }
                     }
                 });
+
+                c.DocInclusionPredicate((version, desc) =>
+                {
+                    var versions = desc.ActionDescriptor.EndpointMetadata
+                        .OfType<ApiVersionAttribute>()
+                        .SelectMany(attr => attr.Versions)
+                        .Select(v => $"v{v.ToString()}");
+
+                    return versions.Any(v => v == version);
+                });
+
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
 
@@ -46,6 +59,25 @@ namespace Products.Common.API.Extension
 
                 c.RoutePrefix = string.Empty;
             });
+        }
+
+        public static IServiceCollection ConfigureApiVersion(this IServiceCollection services)
+        {
+            var apiVersioningBuilder = services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            });
+
+            apiVersioningBuilder.AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
+            return services;
         }
     }
 }

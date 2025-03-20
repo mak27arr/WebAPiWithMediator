@@ -8,7 +8,7 @@ namespace Products.Common.Auth.Extension
 {
     public static class AuthConfigExtension
     {
-        private static readonly string _authorityConfigKey = "AzureAd";
+        private static readonly string _authorityConfigKey = "AzureAd:ClientId";
 
         public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
