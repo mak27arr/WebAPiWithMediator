@@ -8,7 +8,8 @@ namespace Products.Common.Auth.Extension
 {
     public static class AuthConfigExtension
     {
-        private static readonly string _authorityConfigKey = "AzureAd:ClientId";
+        private static readonly string _authorityConfigKey = "AzureAd";
+        private static readonly string _authorityClinetIdConfigKey = "ClientId";
 
         public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
@@ -32,7 +33,7 @@ namespace Products.Common.Auth.Extension
 
         private static bool IsAuthAvailable(IConfiguration configuration)
         {
-            return !string.IsNullOrWhiteSpace(configuration[_authorityConfigKey]);
+            return !string.IsNullOrWhiteSpace(configuration[$"{_authorityConfigKey}:{_authorityClinetIdConfigKey}"]);
         }
     }
 }
