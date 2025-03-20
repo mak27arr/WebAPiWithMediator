@@ -41,7 +41,6 @@ namespace Products.Common.API.Extension
                         .OfType<ApiVersionAttribute>()
                         .SelectMany(attr => attr.Versions)
                         .Select(v => $"v{v.ToString()}");
-
                     return versions.Any(v => v == version);
                 });
 
