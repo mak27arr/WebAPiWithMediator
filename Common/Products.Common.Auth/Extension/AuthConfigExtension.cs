@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Products.Common.Auth.Extension
 {
@@ -10,11 +10,30 @@ namespace Products.Common.Auth.Extension
     {
         private static readonly string _authorityConfigKey = "AzureAd";
         private static readonly string _authorityClinetIdConfigKey = "ClientId";
+        private static readonly string _authorityTenantIdConfigKey = "TenantId";
+        private static readonly string _authorityAuthorityConfigKey = "TenantId";
 
         public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(configuration, _authorityConfigKey);
+                .AddJwtBearer(options =>
+                {
+                    var azureAdSection = configuration.GetSection(_authorityConfigKey);
+                    var tenantId = azureAdSection[_authorityTenantIdConfigKey] ?? configuration["AZUREAD__TENANTID"];
+                    var clientId = azureAdSection[_authorityClinetIdConfigKey] ?? configuration["AZUREAD__CLIENTID"];
+                    var authority = azureAdSection[_authorityAuthorityConfigKey] ?? configuration["AZUREAD__AUTHORITY"];
+                    options.Authority = authority;
+                    options.Audience = clientId;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = authority,
+                        ValidateAudience = true,
+                        ValidAudience = clientId,
+                        ValidateLifetime = true
+                    };
+                });
             services.AddAuthorization();
 
             return services;
