@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Products.Common.Auth.Extension
@@ -13,7 +15,7 @@ namespace Products.Common.Auth.Extension
         private static readonly string _authorityTenantIdConfigKey = "TenantId";
         private static readonly string _authorityAuthorityConfigKey = "TenantId";
 
-        public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -24,6 +26,9 @@ namespace Products.Common.Auth.Extension
                     var authority = azureAdSection[_authorityAuthorityConfigKey] ?? configuration["AZUREAD__AUTHORITY"];
                     options.Authority = authority;
                     options.Audience = clientId;
+
+                    if (environment.IsDevelopment())
+                        options.RequireHttpsMetadata = false;
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
