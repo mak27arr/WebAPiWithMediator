@@ -15,7 +15,7 @@ services:
       - "${PRODUCT__PORT}:5000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product.rule=PathPrefix(`/api/Product`)"
+      - "traefik.http.routers.product.rule=PathPrefix(`/api/Products`)"
       - "traefik.http.routers.сurrency.rule=PathPrefix(`/api/Currency`)"
       - "traefik.http.routers.productPrice.rule=PathPrefix(`/api/ProductPrice`)"
       - "traefik.http.services.product.loadbalancer.server.port=5000"
@@ -81,6 +81,30 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  userservice:
+    image: user_service
+    container_name: ${USERSERVICE__CONTAINER}
+    build:
+        context: .
+        dockerfile: ./UserService/docker/Dockerfile
+    networks:
+      - webapp-network
+    env_file:
+      - .env
+    environment:
+      - MONGODB__DATABASENAME=${MONGODB__USERSERVICE__DATABASENAME}
+    ports:
+      - "${USERSERVICE__PORT}:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.userprofile.rule=PathPrefix(`/api/userprofile`)"
+      - "traefik.http.services.userprofile.loadbalancer.server.port=5000"
+      - "traefik.http.routers.userprofile-swagger.rule=PathPrefix(`/api/userprofile/swagger/v1/swagger.json`)"
+      - "traefik.http.routers.userprofile-swagger.service=userprofile"
+      - "traefik.http.middlewares.userprofile-stripprefix.stripprefix.prefixes=/api/userprofile"
+      - "traefik.http.routers.userprofile-swagger.middlewares=userprofile-stripprefix"
+    depends_on:
+      - mongo
   # gateway:
   #   image: ${DOCKER_REGISTRY-}gateway
   #   container_name: gateway
@@ -119,7 +143,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=5010"
+      - "traefik.http.services.auth.loadbalancer.server.port=5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -223,7 +247,7 @@ services:
       - "--metrics.prometheus=true"
       - "--metrics.prometheus.entrypoint=web"
   swagger-ui:
-    image: swaggerapi/swagger-ui
+    image: swaggerapi/swagger-ui:v3.23.4
     container_name: swagger-ui
     environment:
       BASE_URL: "/api/swagger"
@@ -254,10 +278,61 @@ services:
    networks:
     - webapp-network
    privileged: true
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000" 
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - webapp-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=PathPrefix(`/grafana`)" 
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000" 
+      - "traefik.http.routers.grafana.entrypoints=web"
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - webapp-network
+    volumes:
+      - mongo-data:/data/db
+    env_file:
+      - .env
+  frontend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: ./Frontend
+      dockerfile: ./docker/Dockerfile
+    networks:
+      - webapp-network
+    ports:
+      - "5555:80"
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_AUTHORITY=https://login.microsoftonline.com/${AZUREAD__TENANTID}/v2.0
+      - REACT_APP_CLIENT_ID=${AZUREAD__CLIENTID}
+      - REACT_APP_REDIRECT_URI=${AZUREAD__REDIRECTURI}
+      - REACT_APP_API_BASE_URL=http://localhost/api
+    labels:
+      - "traefik.enable=true"
+     # - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/`) && !PathPrefix(`/api`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
 networks:
   webapp-network:
     driver: bridge
 
 volumes:
   redis_data:
+    driver: local
+  mongo-data:
     driver: local

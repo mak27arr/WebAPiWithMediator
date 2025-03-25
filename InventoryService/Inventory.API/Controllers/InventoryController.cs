@@ -4,13 +4,16 @@ using Inventory.Application.DTOs;
 using Inventory.Application.Features.Inventory.Commands;
 using Inventory.Application.Features.Inventory.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Products.Common.Auth.Role;
 
 namespace Inventory.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
+    [Authorize(Roles = $"{UserRoles.Logistics}")]
     public class InventoryController : ControllerBase
     {
         private readonly IMediator _mediator;

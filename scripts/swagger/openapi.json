@@ -6,13 +6,22 @@
   },
   "paths": {
     "/api/products": {
-      "$ref": "http://localhost:8080/api/products/swagger/v1/swagger.json"
+      "externalDocs": {
+        "description": "API Docs for Products",
+        "url": "http://localhost:8080/api/products/swagger/v1/swagger.json"
+      }
     },
     "/api/order": {
-      "$ref": "http://localhost:8080/api/order/swagger/v1/swagger.json"
+      "externalDocs": {
+        "description": "API Docs for Orders",
+        "url": "http://localhost:8080/api/order/swagger/v1/swagger.json"
+      }
     },
     "/api/inventory": {
-      "$ref": "http://localhost:8080/api/inventory/swagger/v1/swagger.json"
+      "externalDocs": {
+        "description": "API Docs for Inventory",
+        "url": "http://localhost:8080/api/inventory/swagger/v1/swagger.json"
+      }
     }
   }
 }

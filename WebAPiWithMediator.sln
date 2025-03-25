@@ -94,6 +94,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Domain", "Orde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Infrastructure", "OrderService\OrderService.Infrastructure\OrderService.Infrastructure.csproj", "{2824AE43-B55F-ECEF-88B0-8445AACA7B94}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserService", "UserService", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Domain", "UserService\UserService.Domain\UserService.Domain.csproj", "{D5F78E8C-E797-4E25-AB3D-0822684D547D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure", "UserService\UserService.Infrastructure\UserService.Infrastructure.csproj", "{613F717A-8B6F-4220-BC4E-FC0078BBE744}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Application", "UserService\UserService.Application\UserService.Application.csproj", "{04A04C31-BC02-4F8B-A833-8C301EB58F27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.API", "UserService\UserService.API\UserService.API.csproj", "{AD215E78-0CC5-4926-A3E4-9DC690370879}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{55786BF2-77D3-4368-B54A-A8059D48AF5E}"
+	ProjectSection(SolutionItems) = preProject
+		UserService\docker\Dockerfile = UserService\docker\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{44B883EF-D302-4F22-B29D-6058A0ADFF3E}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontend", "Frontend\frontend\frontend.esproj", "{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{8518017F-9D0C-4E78-AAAF-7579C4D21B53}"
+	ProjectSection(SolutionItems) = preProject
+		Frontend\docker\Dockerfile = Frontend\docker\Dockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +204,28 @@ Global
 		{2824AE43-B55F-ECEF-88B0-8445AACA7B94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2824AE43-B55F-ECEF-88B0-8445AACA7B94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2824AE43-B55F-ECEF-88B0-8445AACA7B94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F78E8C-E797-4E25-AB3D-0822684D547D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F78E8C-E797-4E25-AB3D-0822684D547D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F78E8C-E797-4E25-AB3D-0822684D547D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F78E8C-E797-4E25-AB3D-0822684D547D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{613F717A-8B6F-4220-BC4E-FC0078BBE744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{613F717A-8B6F-4220-BC4E-FC0078BBE744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{613F717A-8B6F-4220-BC4E-FC0078BBE744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{613F717A-8B6F-4220-BC4E-FC0078BBE744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04A04C31-BC02-4F8B-A833-8C301EB58F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A04C31-BC02-4F8B-A833-8C301EB58F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A04C31-BC02-4F8B-A833-8C301EB58F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A04C31-BC02-4F8B-A833-8C301EB58F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD215E78-0CC5-4926-A3E4-9DC690370879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD215E78-0CC5-4926-A3E4-9DC690370879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD215E78-0CC5-4926-A3E4-9DC690370879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD215E78-0CC5-4926-A3E4-9DC690370879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,6 +256,13 @@ Global
 		{9E16E264-43F6-058A-88F1-C4000557A2E2} = {A170C02C-7587-4FF5-B222-091E051A5D2C}
 		{22427C13-8922-786F-A912-FF5D67196AD7} = {A170C02C-7587-4FF5-B222-091E051A5D2C}
 		{2824AE43-B55F-ECEF-88B0-8445AACA7B94} = {A170C02C-7587-4FF5-B222-091E051A5D2C}
+		{D5F78E8C-E797-4E25-AB3D-0822684D547D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{613F717A-8B6F-4220-BC4E-FC0078BBE744} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{04A04C31-BC02-4F8B-A833-8C301EB58F27} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{AD215E78-0CC5-4926-A3E4-9DC690370879} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{55786BF2-77D3-4368-B54A-A8059D48AF5E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{AC292B2B-B15E-A6FB-9DCA-CF3CD14663DC} = {44B883EF-D302-4F22-B29D-6058A0ADFF3E}
+		{8518017F-9D0C-4E78-AAAF-7579C4D21B53} = {44B883EF-D302-4F22-B29D-6058A0ADFF3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C24CEB32-C61F-4324-8C4F-0833793DA693}

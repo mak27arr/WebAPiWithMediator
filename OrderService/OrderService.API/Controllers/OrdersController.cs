@@ -1,11 +1,16 @@
-﻿using MediatR;
+﻿using Asp.Versioning;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Features.Commands;
+using Products.Common.Auth.Role;
 
 namespace OrderService.API.Controllers
 {
-    [Route("api/orders")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
+    [Authorize(Roles = $"{UserRoles.Manager}")]
     public class OrdersController : ControllerBase
     {
         private readonly IMediator _mediator;

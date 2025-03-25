@@ -8,7 +8,7 @@ using Products.Core.Commands.Products.PriceCommands;
 namespace Products.ProductAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]
     public class ProductPriceController : ControllerBase

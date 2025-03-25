@@ -9,9 +9,9 @@ using Products.Core.Queries.CurrenciesQueries;
 namespace Products.ProductAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]
+    [Authorize]
     public class CurrencyController : ControllerBase
     {
         private readonly IMediator _mediator;
