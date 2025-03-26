@@ -29,12 +29,9 @@ namespace Inventory.API.Controllers
         public async Task<IActionResult> AddProduct([FromBody] ProductStoreDto productStoreDto)
         {
             var command = _mapper.Map<AddProductToInventoryCommand>(productStoreDto);
-            var result = await _mediator.Send(command);
+            await _mediator.Send(command);
 
-            if (result)
-                return Ok("Product added successfully.");
-
-            return BadRequest("Failed to add product.");
+            return Ok("Product added successfully.");
         }
 
         [HttpPost("RemoveProduct")]
@@ -43,10 +40,7 @@ namespace Inventory.API.Controllers
             var command = _mapper.Map<RemoveProductFromInventoryCommand>(productStoreDto);
             var result = await _mediator.Send(command);
 
-            if (result)
-                return Ok("Product removed successfully.");
-
-            return BadRequest("Failed to remove product.");
+            return Ok($"Product removed successfully. Current count: {result}");
         }
 
         [HttpGet("GetProductCount/{productId}")]

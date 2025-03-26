@@ -1,54 +1,21 @@
 ﻿using Inventory.Application.Features.Inventory.Commands;
-using Inventory.Domain.Events;
-using Inventory.Domain.Interface.Repository;
-using Inventory.Domain.ValueObjects;
+using Inventory.Application.Interface.Services;
 using MediatR;
 
 namespace Inventory.Application.Features.Inventory.Handlers
 {
-    internal class RemoveProductFromInventoryCommandHandler : IRequestHandler<RemoveProductFromInventoryCommand, bool>
+    internal class RemoveProductFromInventoryCommandHandler : IRequestHandler<RemoveProductFromInventoryCommand, int>
     {
-        private readonly IInventoryRepository _inventoryRepository;
-        private readonly IEventStoreRepository _eventStoreRepository;
+        private readonly IInventoryApplicationService _inventoryApplicationService;
 
-        public RemoveProductFromInventoryCommandHandler(IInventoryRepository inventoryRepository, IEventStoreRepository eventStoreRepository)
+        public RemoveProductFromInventoryCommandHandler(IInventoryApplicationService inventoryApplicationService)
         {
-            _inventoryRepository = inventoryRepository;
-            _eventStoreRepository = eventStoreRepository;
+            _inventoryApplicationService = inventoryApplicationService;
         }
 
-        public async Task<bool> Handle(RemoveProductFromInventoryCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(RemoveProductFromInventoryCommand request, CancellationToken cancellationToken)
         {
-            var productStoreModel = new ProductStoreModel
-            {
-                ProductId = request.ProductId,
-                Quantity = request.Quantity
-            };
-
-            var current = await _inventoryRepository.GetProductCountAsync(productStoreModel);
-
-            if (current < productStoreModel.Quantity)
-            {
-                throw new ArgumentException("Not enough in stock");
-            }
-
-            var result = await _inventoryRepository.RemoveProductFromInventoryAsync(productStoreModel);
-
-            if (result > 0)
-            {
-                var inventoryEvent = new InventoryEvent
-                {
-                    ProductId = request.ProductId,
-                    Quantity = request.Quantity,
-                    Action = InventoryAction.Remove,
-                    ReferenceId = request.ReferenceId,
-                    ReferenceType = request.ReferenceType,
-                    Timestamp = DateTime.UtcNow
-                };
-                await _eventStoreRepository.AddEventAsync(inventoryEvent);
-            }
-
-            return result > 0;
+            return await _inventoryApplicationService.HandleRemoveProductAsync(request.ProductId, request.Quantity, request.ReferenceId, request.ReferenceType);
         }
     }
 }

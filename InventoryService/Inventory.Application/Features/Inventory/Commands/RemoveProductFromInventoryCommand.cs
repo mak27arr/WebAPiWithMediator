@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Inventory.Application.Features.Inventory.Commands
 {
-    public class RemoveProductFromInventoryCommand : IRequest<bool>
+    public class RemoveProductFromInventoryCommand : IRequest<int>
     {
         public string? ReferenceId { get; set; }
 

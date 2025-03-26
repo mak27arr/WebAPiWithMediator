@@ -1,4 +1,5 @@
 ﻿using Inventory.Domain.Interface.Repository;
+using Inventory.Domain.Repositories;
 using Inventory.Infrastructure.Kafka;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Repositories;
@@ -37,6 +38,7 @@ namespace Inventory.Infrastructure.Extensions
         {
             services.AddScoped<IEventStoreRepository, EventStoreRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
+            services.AddScoped<IInventoryUow, InventoryUow>();
             return services;
         }
     }

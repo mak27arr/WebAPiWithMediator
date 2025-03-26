@@ -1,6 +1,6 @@
 ﻿using Inventory.Application.Interface;
 
-namespace Inventory.Application.Services
+namespace Inventory.Application.Services.Grpc
 {
     internal class ProductGrpcService : IProductGrpcService
     {

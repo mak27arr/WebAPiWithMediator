@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Inventory.Application.DTOs;
 using Inventory.Application.Features.Inventory.Commands;
-using Inventory.Domain.ValueObjects;
+using Inventory.Domain.Entities;
 
 namespace Inventory.Application.Mappings
 {
@@ -9,7 +9,7 @@ namespace Inventory.Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<ProductStoreDto, ProductStoreModel>()
+            CreateMap<ProductStoreDto, ProductInventory>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));
 

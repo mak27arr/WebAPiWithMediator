@@ -1,5 +1,6 @@
 ﻿using Inventory.Domain.Entities;
 using Inventory.Domain.Events;
+using Inventory.Infrastructure.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Infrastructure.Persistence
@@ -10,7 +11,7 @@ namespace Inventory.Infrastructure.Persistence
             : base(options)
         { }
 
-        public DbSet<ProductInventory> ProductInventories { get; set; }
+        public DbSet<ProductInventoryEntity> ProductInventories { get; set; }
 
         public DbSet<InventoryEvent> InventoryEvents { get; set; }
 

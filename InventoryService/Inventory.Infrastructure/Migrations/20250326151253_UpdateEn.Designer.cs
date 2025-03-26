@@ -3,6 +3,7 @@ using System;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Inventory.Infrastructure.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326151253_UpdateEn")]
+    partial class UpdateEn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace Inventory.Infrastructure.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("ProductInventory");
+                    b.ToTable("ProductInventories");
                 });
 
             modelBuilder.Entity("Inventory.Domain.Events.InventoryEvent", b =>
@@ -68,22 +71,6 @@ namespace Inventory.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InventoryEvents");
-                });
-
-            modelBuilder.Entity("Inventory.Infrastructure.Entity.ProductInventoryEntity", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProductId");
-
-                    b.ToTable("ProductInventories");
                 });
 #pragma warning restore 612, 618
         }

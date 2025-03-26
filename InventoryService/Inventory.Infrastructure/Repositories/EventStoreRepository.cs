@@ -16,8 +16,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task AddEventAsync(InventoryEvent inventoryEvent)
         {
-            _dbContext.InventoryEvents.Add(inventoryEvent);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.InventoryEvents.AddAsync(inventoryEvent);
         }
 
         public async Task<List<InventoryEvent>> GetEventsByProductIdAsync(int productId)

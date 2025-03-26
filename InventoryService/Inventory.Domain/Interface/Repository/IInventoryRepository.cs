@@ -1,13 +1,14 @@
-﻿using Inventory.Domain.ValueObjects;
+﻿
+using Inventory.Domain.Entities;
 
 namespace Inventory.Domain.Interface.Repository
 {
     public interface IInventoryRepository
     {
-        Task<bool> AddProductToInventoryAsync(ProductStoreModel productStore);
-        
-        Task<int?> GetProductCountAsync(ProductStoreModel productStore);
-        
-        Task<int> RemoveProductFromInventoryAsync(ProductStoreModel productStore);
+        Task<bool> AddProductToInventoryAsync(ProductInventory productStore);
+
+        Task<ProductInventory> GetProductAsync(int productId);
+
+        Task<int> UpdateProductInInventoryAsync(ProductInventory productStore);
     }
 }

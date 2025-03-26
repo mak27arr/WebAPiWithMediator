@@ -1,6 +1,7 @@
-﻿using Inventory.Domain.Entities;
+﻿using AutoMapper;
+using Inventory.Domain.Entities;
 using Inventory.Domain.Interface.Repository;
-using Inventory.Domain.ValueObjects;
+using Inventory.Infrastructure.Entity;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,50 +10,42 @@ namespace Inventory.Infrastructure.Repositories
     internal class InventoryRepository : IInventoryRepository
     {
         private readonly InventoryDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public InventoryRepository(InventoryDbContext dbContext)
+        public InventoryRepository(InventoryDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public async Task<bool> AddProductToInventoryAsync(ProductStoreModel productStore)
+        public async Task<bool> AddProductToInventoryAsync(ProductInventory productInventory)
         {
-            var productInventory = new ProductInventory() 
-            { 
-                ProductId = productStore.ProductId, 
-                Quantity = productStore.Quantity 
-            };
-
-            _dbContext.ProductInventories.Add(productInventory);
-            await _dbContext.SaveChangesAsync();
+            var productEntity = _mapper.Map<ProductInventoryEntity>(productInventory);
+            await _dbContext.ProductInventories.AddAsync(productEntity);
             return true;
         }
 
-        public async Task<int?> GetProductCountAsync(ProductStoreModel productStore)
+        public async Task<ProductInventory> GetProductAsync(int productId)
         {
             var productInventory = await _dbContext.ProductInventories
-                .Where(p => p.ProductId == productStore.ProductId)
+                .Where(p => p.ProductId == productId)
                 .FirstOrDefaultAsync();
 
-            return productInventory?.Quantity;
+            return _mapper.Map<ProductInventory>(productInventory);
         }
 
-        public async Task<int> RemoveProductFromInventoryAsync(ProductStoreModel productStore)
+        public async Task<int> UpdateProductInInventoryAsync(ProductInventory productInventory)
         {
-            var productInventory = await _dbContext.ProductInventories
-                .Where(p => p.ProductId == productStore.ProductId)
+            var currentProductInventory = await _dbContext.ProductInventories
+                .Where(p => p.ProductId == productInventory.ProductId)
                 .FirstOrDefaultAsync();
 
-            if (productInventory != null)
-            {
-                productInventory.Quantity -= productStore.Quantity;
+            if (currentProductInventory == null)
+                throw new KeyNotFoundException($"{productInventory.ProductId}");
 
-                if (productInventory.Quantity <= 0)
-                    _dbContext.ProductInventories.Remove(productInventory);
-
-                await _dbContext.SaveChangesAsync();
-                return productInventory.Quantity ?? 0;
-            }
+            var productEntity = _mapper.Map<ProductInventoryEntity>(productInventory);
+            _dbContext.ProductInventories.Attach(productEntity);
+            _dbContext.Entry(productEntity).State = EntityState.Modified;
 
             return 0;
         }

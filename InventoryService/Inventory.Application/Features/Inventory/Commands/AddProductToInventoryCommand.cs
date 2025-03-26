@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Inventory.Application.Features.Inventory.Commands
 {
-    public class AddProductToInventoryCommand : IRequest<bool>
+    public class AddProductToInventoryCommand : IRequest
     {
         public string? ReferenceId { get; set; }
 
