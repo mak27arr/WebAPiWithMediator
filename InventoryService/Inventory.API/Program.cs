@@ -4,10 +4,6 @@ using Products.Common.API.Extension;
 using Products.Common.API.Middleware;
 using Products.Common.Auth.Extension;
 using Prometheus;
-using static Azure.Core.HttpHeader;
-using System.Text;
-using System.Xml.Linq;
-using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -19,7 +15,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddCommunicationServices();
 builder.Services.AddCustomCors();
 builder.Services.ConfigureApiVersion();
-builder.Services.AddSwaggerServices(versions: "v1");
+builder.Services.AddSwaggerServices(versions: "1.0");
 builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddControllers();
 builder.Services.AddProductHealthChecks();
@@ -31,7 +27,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseCustomSwagger(versions: "v1");
+app.UseCustomSwagger(versions: "1.0");
 app.ConfigureHttpsRedirection(builder.Configuration);
 
 app.UseCors("AllowAnyOrigin");

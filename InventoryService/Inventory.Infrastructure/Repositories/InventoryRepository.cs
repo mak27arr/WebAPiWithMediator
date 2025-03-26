@@ -20,6 +20,13 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<bool> AddProductToInventoryAsync(ProductInventory productInventory)
         {
+            var currentProductInventory = await _dbContext.ProductInventories
+                .Where(p => p.ProductId == productInventory.ProductId)
+                .FirstOrDefaultAsync();
+
+            if (currentProductInventory != null)
+                throw new ArgumentException($"Key exist {productInventory.ProductId}");
+
             var productEntity = _mapper.Map<ProductInventoryEntity>(productInventory);
             await _dbContext.ProductInventories.AddAsync(productEntity);
             return true;
@@ -43,11 +50,9 @@ namespace Inventory.Infrastructure.Repositories
             if (currentProductInventory == null)
                 throw new KeyNotFoundException($"{productInventory.ProductId}");
 
-            var productEntity = _mapper.Map<ProductInventoryEntity>(productInventory);
-            _dbContext.ProductInventories.Attach(productEntity);
-            _dbContext.Entry(productEntity).State = EntityState.Modified;
+            currentProductInventory.UpdateFromProduct(productInventory);
 
-            return 0;
+            return currentProductInventory.ProductId;
         }
     }
 }

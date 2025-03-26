@@ -1,6 +1,7 @@
 ﻿using Inventory.Domain.Interface.Repository;
 using Inventory.Domain.Repositories;
 using Inventory.Infrastructure.Kafka;
+using Inventory.Infrastructure.Mappings;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace Inventory.Infrastructure.Extensions
             services.AddDbContext(configuration);
             services.AddRepositories();
             services.AddSingleton<IKafkaProducer, KafkaProducer>();
+            services.AddAutoMapper(typeof(MappingProfile));
             return services;
         }
 

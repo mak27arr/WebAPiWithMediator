@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Inventory.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Inventory.Infrastructure.Entity
 {
@@ -8,5 +9,10 @@ namespace Inventory.Infrastructure.Entity
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
+
+        internal void UpdateFromProduct(ProductInventory productInventory)
+        {
+            Quantity = productInventory.Quantity ?? 0;
+        }
     }
 }

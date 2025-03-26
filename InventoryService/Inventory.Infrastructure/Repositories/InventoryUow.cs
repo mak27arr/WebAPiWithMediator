@@ -1,6 +1,8 @@
 ﻿using Inventory.Domain.Interface.Repository;
 using Inventory.Domain.Repositories;
 using Inventory.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Inventory.Infrastructure.Repositories
 {
@@ -12,16 +14,27 @@ namespace Inventory.Infrastructure.Repositories
 
         private InventoryDbContext _context;
 
-        public InventoryUow(InventoryDbContext context, IInventoryRepository inventoryRepository, IEventStoreRepository eventStoreRepository)
+        private readonly ILogger<InventoryUow> _logger;
+
+        public InventoryUow(InventoryDbContext context, IInventoryRepository inventoryRepository, IEventStoreRepository eventStoreRepository, ILogger<InventoryUow> logger)
         {
             InventoryRepository = inventoryRepository;
             EventStoreRepository = eventStoreRepository;
             _context = context;
+            _logger = logger;
         }
 
         public async Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            try
+            {
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError($"Error: {ex.InnerException?.Message}");
+                throw;
+            }
         }
     }
 }

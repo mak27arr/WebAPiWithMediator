@@ -25,22 +25,20 @@ namespace Inventory.Application.Services
         {
             await CheckIfProductExists(productId);
 
-            var productInventory = await _inventory.InventoryRepository.GetProductAsync(productId)
-                              ?? new ProductInventory() { ProductId = productId };
+            var currentProductCount = await _inventory.InventoryRepository.GetProductAsync(productId);
+            
+            var isNewProduct = currentProductCount == null;
+            if (isNewProduct)
+                currentProductCount = new ProductInventory() { ProductId = productId };
 
-            productInventory.Add(amount);
-            var inventoryEvent = new InventoryEvent
-            {
-                ProductId = productInventory.ProductId,
-                Quantity = productInventory.Quantity,
-                Action = InventoryAction.Add,
-                ReferenceId = addedBy,
-                ReferenceType = addedByType,
-                Timestamp = DateTime.UtcNow
-            };
+            currentProductCount.Add(amount);
+            
+            if (isNewProduct) 
+                await _inventory.InventoryRepository.AddProductToInventoryAsync(currentProductCount);
+            else
+                await _inventory.InventoryRepository.UpdateProductInInventoryAsync(currentProductCount);
 
-            await _inventory.InventoryRepository.UpdateProductInInventoryAsync(productInventory);
-            await _inventory.EventStoreRepository.AddEventAsync(inventoryEvent);
+            await AddProductEvent(productId, amount, InventoryAction.Add, addedBy, addedByType);
             await _inventory.SaveChangesAsync();
         }
 
@@ -57,19 +55,10 @@ namespace Inventory.Application.Services
             if (productInventory == null)
                 throw new InvalidOperationException("Product not found");
 
-            var inventoryEvent = new InventoryEvent
-            {
-                ProductId = productInventory.ProductId,
-                Quantity = productInventory.Quantity,
-                Action = InventoryAction.Remove,
-                ReferenceId = addedBy,
-                ReferenceType = addedByType,
-                Timestamp = DateTime.UtcNow
-            };
+            await AddProductEvent(productId, amount, InventoryAction.Remove, addedBy, addedByType);
             productInventory.Remove(amount);
 
             await _inventory.InventoryRepository.UpdateProductInInventoryAsync(productInventory);
-            await _inventory.EventStoreRepository.AddEventAsync(inventoryEvent);
             await _inventory.SaveChangesAsync();
 
             return productInventory.Quantity.Value;
@@ -80,7 +69,7 @@ namespace Inventory.Application.Services
             if (!productId.HasValue)
             {
                 var message = "Product required";
-                SendReservationFailed(addedBy, message);
+                await SendReservationFailed(addedBy, message);
                 throw new InvalidOperationException(message);
             }
 
@@ -89,34 +78,40 @@ namespace Inventory.Application.Services
             if (productInventory == null)
             {
                 var message = "Product not found";
-                SendReservationFailed(addedBy, message);
+                await SendReservationFailed(addedBy, message);
                 throw new InvalidOperationException(message);
             }
 
             productInventory.Reserve(amount);
 
-            var inventoryEvent = new InventoryEvent
-            {
-                ProductId = productInventory.ProductId,
-                Quantity = productInventory.Quantity,
-                Action = InventoryAction.Reserved,
-                ReferenceId = addedBy.ToString(),
-                ReferenceType = addedByType,
-                Timestamp = DateTime.UtcNow
-            };
-
             try
             {
+                await AddProductEvent(productId.Value, amount, InventoryAction.Reserved, addedBy.ToString(), addedByType);
                 await _inventory.InventoryRepository.UpdateProductInInventoryAsync(productInventory);
-                await _inventory.EventStoreRepository.AddEventAsync(inventoryEvent);
                 await _inventory.SaveChangesAsync();
-                SendReservationSucceeded(addedBy);
+                await SendReservationSucceeded(addedBy);
             }
             catch (Exception ex)
             {
-                SendReservationFailed(addedBy, ex.Message);
+                await SendReservationFailed(addedBy, ex.Message);
             }
         }
+
+        private async Task AddProductEvent(int productId, int amount, string action, string addedBy, EventReferenceType addedByType)
+        {
+            var inventoryEvent = new InventoryEvent
+            {
+                ProductId = productId,
+                Quantity = amount,
+                Action = action,
+                ReferenceId = addedBy,
+                ReferenceType = addedByType,
+                Timestamp = DateTime.UtcNow
+            };
+            await _inventory.EventStoreRepository.AddEventAsync(inventoryEvent);
+        }
+
+        #region external comunication
 
         private async Task SendReservationSucceeded(Guid orderId)
         {
@@ -146,5 +141,7 @@ namespace Inventory.Application.Services
             if (!product)
                 throw new InvalidOperationException($"Product {productId} does not exist.");
         }
+
+        #endregion
     }
 }

@@ -2,9 +2,9 @@
 {
     public class ProductInventory
     {
-        public int? ProductId { get; init; }  
-  
-        public int? Quantity { get; private set; }
+        public int? ProductId { get; init; }
+
+        public int? Quantity { get; private set; } = 0;
 
         public void Reserve(int amount)
         {
