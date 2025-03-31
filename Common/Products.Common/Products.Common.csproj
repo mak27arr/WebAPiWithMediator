@@ -11,12 +11,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.8.0" />
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />
     <PackageReference Include="Grpc.Tools" Version="2.50.0">
       <PrivateAssets>All</PrivateAssets>
       <IncludeAssets>Runtime;Build;Native;ContentFiles;Analyzers;BuildTransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
