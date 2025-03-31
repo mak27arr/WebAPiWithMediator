@@ -1,6 +1,5 @@
 ﻿using Inventory.Domain.Interface.Repository;
 using Inventory.Domain.Repositories;
-using Inventory.Infrastructure.Kafka;
 using Inventory.Infrastructure.Mappings;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Repositories;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Products.Common.Kafka;
+using Products.Common.Kafka.Producer;
 
 namespace Inventory.Infrastructure.Extensions
 {

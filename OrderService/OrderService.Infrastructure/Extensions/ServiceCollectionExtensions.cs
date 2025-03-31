@@ -4,8 +4,8 @@ using OrderService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OrderService.Infrastructure.Kafka;
 using Products.Common.Kafka;
+using Products.Common.Kafka.Producer;
 
 namespace OrderService.Infrastructure.Extensions
 {

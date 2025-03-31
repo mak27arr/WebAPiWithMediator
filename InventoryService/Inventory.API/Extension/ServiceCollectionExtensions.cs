@@ -6,7 +6,8 @@ namespace Inventory.API.Extension
     {
         public static IServiceCollection AddCommunicationServices(this IServiceCollection services)
         {
-            services.AddHostedService<OrderCreatedConsumer>();
+            services.AddSingleton<OrderCreatedConsumer>();
+            services.AddHostedService<OrderCreatedConsumerBackgroundService>();
             return services;
         }
     }

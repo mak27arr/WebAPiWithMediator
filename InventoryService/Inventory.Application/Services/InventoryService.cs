@@ -120,7 +120,7 @@ namespace Inventory.Application.Services
                 OrderId = orderId,
             };
 
-            await _kafkaProducer.ProduceAsync(KafkaInventoryTopics.InventoryReservationSucceeded, reservedEvent);
+            await _kafkaProducer.ProduceAsync(reservedEvent);
         }
 
         private async Task SendReservationFailed(Guid orderId, string message)
@@ -131,7 +131,7 @@ namespace Inventory.Application.Services
                 Message = message,
             };
 
-            await _kafkaProducer.ProduceAsync(KafkaInventoryTopics.InventoryReservationFailed, notAvailableEvent);
+            await _kafkaProducer.ProduceAsync(notAvailableEvent);
         }
 
         private async Task CheckIfProductExists(int productId)
