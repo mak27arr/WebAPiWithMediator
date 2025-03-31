@@ -1,7 +1,4 @@
-﻿using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
 using Products.Common.Kafka.EventArg;
 
 namespace Inventory.API.Kafka.Consumers
