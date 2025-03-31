@@ -10,7 +10,7 @@
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Products.Common" Version="1.0.12" />
+    <PackageReference Include="Products.Common" Version="1.0.23" />
   </ItemGroup>
 
   <ItemGroup>
