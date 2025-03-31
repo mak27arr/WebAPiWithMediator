@@ -15,7 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Products.Common" Version="1.0.22" />
+    <PackageReference Include="Products.Common" Version="1.0.23" />
     <PackageReference Include="Products.Common.API" Version="1.0.18" />
     <PackageReference Include="Products.Common.Auth" Version="1.0.21" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
