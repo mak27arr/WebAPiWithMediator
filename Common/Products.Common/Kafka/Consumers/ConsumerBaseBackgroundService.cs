@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Products.Common.Kafka.EventArg;
 
 namespace Inventory.API.Kafka.Consumers
 {
-    public abstract class ConsumerBaseBackgroundService<TEvent> : BackgroundService
+    public abstract class ConsumerBaseBackgroundService<TEvent> : BackgroundService where TEvent : BaseEvent, new()
     {
         private readonly ConsumerBase<TEvent> _consumerBase;
 
