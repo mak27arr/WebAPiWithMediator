@@ -1,6 +1,6 @@
 ﻿namespace Products.Common.Protos.Product
 {
-    internal class ProductGrpcService : IProductGrpcService
+    public class ProductGrpcService : IProductGrpcService
     {
         private readonly ProductService.Grpc.ProductService.ProductServiceClient _client;
 
