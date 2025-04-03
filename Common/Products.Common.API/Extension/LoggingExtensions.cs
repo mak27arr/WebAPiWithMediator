@@ -1,7 +1,10 @@
-﻿using Elastic.Ingest.Elasticsearch;
+﻿using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Ingest.Elasticsearch;
 using Elastic.Serilog.Sinks;
 using Microsoft.AspNetCore.Builder;
 using Serilog;
+using Elastic.Transport;
+using Microsoft.Extensions.Hosting;
 
 namespace Products.Common.API.Extension
 {
@@ -16,12 +19,18 @@ namespace Products.Common.API.Extension
             var elasticUri = elasticConfig["Uri"];
             var elasticUser = elasticConfig["Username"];
             var elasticPass = elasticConfig["Password"];
+            var name = builder.Environment.ApplicationName;
+            var hostEnvironment = builder.Environment.IsDevelopment() ? Environments.Development : Environments.Production;
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.ElasticCloud(endpoint: new Uri(elasticUri), 
-                bootstrapMethod: BootstrapMethod.None, 
-                username: elasticUser, 
-                password: elasticPass)
+                .WriteTo.Elasticsearch(new[] { new Uri(elasticUri) }, opts =>
+                {
+                    opts.DataStream = new DataStreamName("logs", name, hostEnvironment);
+                    opts.BootstrapMethod = BootstrapMethod.Failure;
+                }, transport =>
+                {
+                    transport.Authentication(new BasicAuthentication(elasticUser, elasticPass));
+                })
                 .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day)
                 .Enrich.FromLogContext()
                 .CreateLogger();
