@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Products.Common.API.Enricher;
 using System.Diagnostics;
 
 namespace Products.Common.API.Middleware
@@ -19,7 +20,7 @@ namespace Products.Common.API.Middleware
 
             var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
             var client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Session-Id", traceId);
+            client.DefaultRequestHeaders.Add(Const.SessionIdKey, traceId);
             await _next(context);
         }
     }

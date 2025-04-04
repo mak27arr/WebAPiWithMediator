@@ -9,7 +9,7 @@ namespace Products.Common.API.Enricher
         public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
         {
             var traceId = Activity.Current?.TraceId.ToString() ?? Guid.NewGuid().ToString();
-            logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty("SessionId", traceId));
+            logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty(Const.SessionIdKey, traceId));
         }
     }
 }

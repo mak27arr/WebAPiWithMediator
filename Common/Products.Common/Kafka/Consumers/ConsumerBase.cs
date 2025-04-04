@@ -26,6 +26,7 @@ namespace Inventory.API.Kafka.Consumers
 
         public async Task StartConsumeTask(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Start consume {0}", GetTopicName());
             var config = GetKafkaConfig();
 
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
@@ -60,6 +61,7 @@ namespace Inventory.API.Kafka.Consumers
 
             await consumerTask;
             consumer.Close();
+            _logger.LogInformation("Stop consume {0}", GetTopicName());
         }
 
         private static string GetSesionId(ConsumeResult<Ignore, string> result)
