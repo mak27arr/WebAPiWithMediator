@@ -8,7 +8,7 @@ namespace Products.Common.Kafka.EventArg
         public Guid EventId { get; init; } = Guid.NewGuid(); 
         public DateTime Timestamp { get; init; } = DateTime.UtcNow; 
         public string EventType { get; init; } 
-        public string TraceId { get; init; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
+        public string TraceId { get; init; } = Activity.Current?.Id ?? ActivityTraceId.CreateRandom().ToString();
         public abstract string Topic { get; }
 
         protected BaseEvent()

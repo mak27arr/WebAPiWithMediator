@@ -1,6 +1,8 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using Products.Common.Kafka.EventArg;
 using Serilog.Context;
 using System.Text;
@@ -12,6 +14,7 @@ namespace Inventory.API.Kafka.Consumers
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
         private readonly string _topic;
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         protected ConsumerBase(
             IConfiguration config,
@@ -20,6 +23,14 @@ namespace Inventory.API.Kafka.Consumers
             _config = config;
             _logger = logger;
             _topic = GetTopicName();
+
+            _retryPolicy = Policy
+            .Handle<Exception>()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            (exception, timeSpan, retryCount, context) =>
+            {
+                _logger.LogWarning($"Attempt {retryCount} failed. Retrying in {timeSpan.TotalSeconds} seconds...");
+            });
         }
 
         private string GetTopicName() => new TEvent().Topic;
@@ -50,8 +61,21 @@ namespace Inventory.API.Kafka.Consumers
                     using (LogContext.PushProperty("X-Session-Id", sessionId))
                     {
                         _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
-                        await ProcessMessage(result, stoppingToken);
+
+                        var isSuccess = await _retryPolicy.ExecuteAsync(async () =>
+                        {
+                            await ProcessMessage(result, stoppingToken);
+                            return true;
+                        });
+
                         consumer.Commit(result);
+
+                        if (!isSuccess)
+                        {
+                            _logger.LogError("Message processing failed after. Sending to Dead Letter Queue...");
+                            await SendToDeadLetterQueue(result);
+                        }
+                        
                     }
                 }
             }
@@ -63,6 +87,11 @@ namespace Inventory.API.Kafka.Consumers
             {
                 _logger.LogInformation("Kafka Consumer for topic '{0}' stopped.", _topic);
             }
+        }
+
+        private async Task SendToDeadLetterQueue(ConsumeResult<Ignore, string> result)
+        {
+            //TODO
         }
 
         private static string GetSesionId(ConsumeResult<Ignore, string> result)
