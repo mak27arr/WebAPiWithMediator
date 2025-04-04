@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Products.Common.Kafka.EventArg;
+using Serilog.Context;
+using System.Text;
 
 namespace Inventory.API.Kafka.Consumers
 {
@@ -36,9 +38,14 @@ namespace Inventory.API.Kafka.Consumers
                     while (!stoppingToken.IsCancellationRequested)
                     {
                         var result = consumer.Consume(stoppingToken);
-                        _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
-                        await ProcessMessage(result, stoppingToken);
-                        consumer.Commit(result);
+                        var sessionId = GetSesionId(result);
+
+                        using (LogContext.PushProperty("X-Session-Id", sessionId))
+                        {
+                            _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
+                            await ProcessMessage(result, stoppingToken);
+                            consumer.Commit(result);
+                        }
                     }
                 }
                 catch (ConsumeException ex)
@@ -53,6 +60,13 @@ namespace Inventory.API.Kafka.Consumers
 
             await consumerTask;
             consumer.Close();
+        }
+
+        private static string GetSesionId(ConsumeResult<Ignore, string> result)
+        {
+            return result.Message.Headers.TryGetLastBytes("X-Session-Id", out var sessionIdBytes)
+                ? Encoding.UTF8.GetString(sessionIdBytes)
+                : "UnknownSessionId";
         }
 
         private ConsumerConfig GetKafkaConfig()

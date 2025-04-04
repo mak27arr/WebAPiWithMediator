@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Elastic.Transport;
 using Microsoft.Extensions.Hosting;
+using Products.Common.API.Enricher;
 
 namespace Products.Common.API.Extension
 {
@@ -23,6 +24,7 @@ namespace Products.Common.API.Extension
             var hostEnvironment = builder.Environment.IsDevelopment() ? Environments.Development : Environments.Production;
 
             Log.Logger = new LoggerConfiguration()
+                .Enrich.With<SessionIdEnricher>()
                 .WriteTo.Elasticsearch(new[] { new Uri(elasticUri) }, opts =>
                 {
                     opts.DataStream = new DataStreamName("logs", name, hostEnvironment);
