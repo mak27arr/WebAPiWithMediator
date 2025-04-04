@@ -5,6 +5,7 @@ using Polly;
 using Polly.Retry;
 using Products.Common.Kafka.EventArg;
 using Serilog.Context;
+using System.Diagnostics;
 using System.Text;
 
 namespace Inventory.API.Kafka.Consumers
@@ -15,6 +16,7 @@ namespace Inventory.API.Kafka.Consumers
         private readonly ILogger _logger;
         private readonly string _topic;
         private readonly AsyncRetryPolicy _retryPolicy;
+        private static readonly ActivitySource _activitySource = new("KafkaConsumer");
 
         protected ConsumerBase(
             IConfiguration config,
@@ -58,8 +60,10 @@ namespace Inventory.API.Kafka.Consumers
                     var result = consumer.Consume(stoppingToken);
                     var sessionId = GetSesionId(result);
 
+                    using (var activity = _activitySource.StartActivity("Kafka ProcessMessage", ActivityKind.Consumer))
                     using (LogContext.PushProperty("X-Session-Id", sessionId))
                     {
+                        SetActivityParams(result, sessionId, activity);
                         _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
 
                         var isSuccess = await _retryPolicy.ExecuteAsync(async () =>
@@ -75,7 +79,7 @@ namespace Inventory.API.Kafka.Consumers
                             _logger.LogError("Message processing failed after. Sending to Dead Letter Queue...");
                             await SendToDeadLetterQueue(result);
                         }
-                        
+
                     }
                 }
             }
@@ -89,7 +93,22 @@ namespace Inventory.API.Kafka.Consumers
             }
         }
 
-        private async Task SendToDeadLetterQueue(ConsumeResult<Ignore, string> result)
+        private void SetActivityParams(ConsumeResult<Ignore, string> result, string sessionId, Activity? activity)
+        {
+            if (activity != null)
+            {
+                if (!string.IsNullOrEmpty(sessionId))
+                    activity.SetParentId(sessionId);
+
+                activity.SetTag("kafka.topic", _topic);
+                activity.SetTag("kafka.partition", result.Partition.Value);
+                activity.SetTag("kafka.offset", result.Offset.Value);
+                activity.SetTag("message.key", result.Message.Key);
+                activity.SetTag("message.value", result.Message.Value);
+            }
+        }
+
+        protected virtual async Task SendToDeadLetterQueue(ConsumeResult<Ignore, string> result)
         {
             //TODO
         }
