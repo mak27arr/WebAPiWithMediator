@@ -1,10 +1,9 @@
-﻿using Inventory.Application.Interface;
-using Inventory.Application.Interface.Services;
+﻿using Inventory.Application.Interface.Services;
 using Inventory.Domain.Entities;
 using Inventory.Domain.Events;
 using Inventory.Domain.Repositories;
-using Products.Common.Kafka;
-using Products.Common.Kafka.EventArg.Inventory;
+using Products.Common.Protos.Product;
+using Microsoft.Extensions.Logging;
 
 namespace Inventory.Application.Services
 {
@@ -12,13 +11,15 @@ namespace Inventory.Application.Services
     {
         private readonly IInventoryUow _inventory;
         private readonly IProductGrpcService _productGrpcService;
-        private readonly IKafkaProducer _kafkaProducer;
+        private readonly ILogger<InventoryService> _logger;
 
-        public InventoryService(IInventoryUow inventory, IProductGrpcService productGrpcService, IKafkaProducer kafkaProducer)
+        public InventoryService(IInventoryUow inventory, 
+            IProductGrpcService productGrpcService,  
+            ILogger<InventoryService> logger)
         {
             _inventory = inventory;
             _productGrpcService = productGrpcService;
-            _kafkaProducer = kafkaProducer;
+            _logger = logger;
         }
 
         public async Task AddProductAsync(int productId, int amount, string addedBy, EventReferenceType addedByType)
@@ -67,33 +68,34 @@ namespace Inventory.Application.Services
         public async Task ReserveProductAsync(int? productId, int amount, Guid addedBy, EventReferenceType addedByType)
         {
             if (!productId.HasValue)
-            {
-                var message = "Product required";
-                await SendReservationFailed(addedBy, message);
-                throw new InvalidOperationException(message);
-            }
+                throw new InvalidOperationException("Product required");
 
             var productInventory = await _inventory.InventoryRepository.GetProductAsync(productId.Value);
 
             if (productInventory == null)
             {
-                var message = "Product not found";
-                await SendReservationFailed(addedBy, message);
+                var message = "Product {0} not found";
+                _logger.LogInformation(message, productId);
                 throw new InvalidOperationException(message);
             }
 
-            productInventory.Reserve(amount);
-
             try
             {
+                productInventory.Reserve(amount);
                 await AddProductEvent(productId.Value, amount, InventoryAction.Reserved, addedBy.ToString(), addedByType);
                 await _inventory.InventoryRepository.UpdateProductInInventoryAsync(productInventory);
                 await _inventory.SaveChangesAsync();
-                await SendReservationSucceeded(addedBy);
+                _logger.LogInformation("Reserved product {0}", productId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogInformation("Reserved fail product {0} error: {1}", productId, ex.Message);
+                throw;
             }
             catch (Exception ex)
             {
-                await SendReservationFailed(addedBy, ex.Message);
+                _logger.LogError(ex, "Unexpected error while reserving product {0} amount: {1}", productId, amount);
+                throw;
             }
         }
 
@@ -112,27 +114,6 @@ namespace Inventory.Application.Services
         }
 
         #region external comunication
-
-        private async Task SendReservationSucceeded(Guid orderId)
-        {
-            var reservedEvent = new InventoryReservedEvent
-            {
-                OrderId = orderId,
-            };
-
-            await _kafkaProducer.ProduceAsync(reservedEvent);
-        }
-
-        private async Task SendReservationFailed(Guid orderId, string message)
-        {
-            var notAvailableEvent = new InventoryNotAvailableEvent
-            {
-                OrderId = orderId,
-                Message = message,
-            };
-
-            await _kafkaProducer.ProduceAsync(notAvailableEvent);
-        }
 
         private async Task CheckIfProductExists(int productId)
         {

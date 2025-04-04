@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Products.Common.Kafka;
 using Products.Common.Kafka.Producer;
+using Products.Common.Protos.Product;
 
 namespace Inventory.Infrastructure.Extensions
 {
@@ -18,6 +19,7 @@ namespace Inventory.Infrastructure.Extensions
             services.AddDbContext(configuration);
             services.AddRepositories();
             services.AddSingleton<IKafkaProducer, KafkaProducer>();
+            services.RegisterGrpcService(configuration);
             services.AddAutoMapper(typeof(MappingProfile));
             return services;
         }
@@ -41,6 +43,19 @@ namespace Inventory.Infrastructure.Extensions
             services.AddScoped<IEventStoreRepository, EventStoreRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IInventoryUow, InventoryUow>();
+            return services;
+        }
+
+        private static IServiceCollection RegisterGrpcService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var grpcUrl = configuration.GetValue<string>("GrpcSettings:ProductServiceUrl");
+
+            services.AddGrpcClient<ProductService.Grpc.ProductService.ProductServiceClient>(options =>
+            {
+                options.Address = new Uri(grpcUrl);
+            });
+            services.AddScoped<IProductGrpcService, ProductGrpcService>();
+
             return services;
         }
     }

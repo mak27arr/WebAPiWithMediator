@@ -1,4 +1,5 @@
-﻿using Inventory.Application.Interface.Services;
+﻿using FluentResults;
+using Inventory.Application.Interface.Services;
 using Inventory.Domain.Events;
 
 namespace Inventory.Application.Services

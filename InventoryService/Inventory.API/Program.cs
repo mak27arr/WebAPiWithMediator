@@ -15,7 +15,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddCommunicationServices();
 builder.Services.AddCustomCors();
 builder.Services.ConfigureApiVersion();
-builder.Services.AddSwaggerServices(versions: "1.0");
+builder.Services.AddSwaggerServices(versions: "v1");
 builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddControllers();
 builder.Services.AddProductHealthChecks();
@@ -27,7 +27,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseCustomSwagger(versions: "1.0");
+app.UseCustomSwagger(versions: "v1");
 app.ConfigureHttpsRedirection(builder.Configuration);
 
 app.UseCors("AllowAnyOrigin");

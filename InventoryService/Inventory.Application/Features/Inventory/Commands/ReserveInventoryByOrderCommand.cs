@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Products.Common.Kafka.EventArg;
 
 namespace Inventory.Application.Features.Inventory.Commands

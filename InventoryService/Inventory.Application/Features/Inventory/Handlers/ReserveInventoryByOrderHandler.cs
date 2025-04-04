@@ -1,4 +1,5 @@
-﻿using Inventory.Application.Features.Inventory.Commands;
+﻿using FluentResults;
+using Inventory.Application.Features.Inventory.Commands;
 using Inventory.Application.Interface.Services;
 using Inventory.Domain.Events;
 using MediatR;
