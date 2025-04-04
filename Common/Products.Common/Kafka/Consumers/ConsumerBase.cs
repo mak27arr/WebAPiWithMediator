@@ -28,40 +28,41 @@ namespace Inventory.API.Kafka.Consumers
         {
             _logger.LogInformation("Start consume {0}", GetTopicName());
             var config = GetKafkaConfig();
-
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
-            consumer.Subscribe(_topic);
 
-            var consumerTask = Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    while (!stoppingToken.IsCancellationRequested)
-                    {
-                        var result = consumer.Consume(stoppingToken);
-                        var sessionId = GetSesionId(result);
+            await Task.Run(() => ProcessConsumeMessage(consumer, stoppingToken), stoppingToken);
 
-                        using (LogContext.PushProperty("X-Session-Id", sessionId))
-                        {
-                            _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
-                            await ProcessMessage(result, stoppingToken);
-                            consumer.Commit(result);
-                        }
-                    }
-                }
-                catch (ConsumeException ex)
-                {
-                    _logger.LogError("Kafka consume error: {0}", ex.Message);
-                }
-                catch (OperationCanceledException)
-                {
-                    _logger.LogInformation("Kafka Consumer for topic '{0}' stopped.", _topic);
-                }
-            }, stoppingToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-
-            await consumerTask;
             consumer.Close();
             _logger.LogInformation("Stop consume {0}", GetTopicName());
+        }
+
+        private async Task ProcessConsumeMessage(IConsumer<Ignore, string> consumer, CancellationToken stoppingToken)
+        {
+            try
+            {
+                consumer.Subscribe(_topic);
+
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    var result = consumer.Consume(stoppingToken);
+                    var sessionId = GetSesionId(result);
+
+                    using (LogContext.PushProperty("X-Session-Id", sessionId))
+                    {
+                        _logger.LogInformation("Received event from topic '{0}': {1}", _topic, result.Message.Value);
+                        await ProcessMessage(result, stoppingToken);
+                        consumer.Commit(result);
+                    }
+                }
+            }
+            catch (ConsumeException ex)
+            {
+                _logger.LogError("Kafka consume error: {0}", ex.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("Kafka Consumer for topic '{0}' stopped.", _topic);
+            }
         }
 
         private static string GetSesionId(ConsumeResult<Ignore, string> result)
@@ -71,11 +72,9 @@ namespace Inventory.API.Kafka.Consumers
                 : "UnknownSessionId";
         }
 
-        private ConsumerConfig GetKafkaConfig()
+        protected virtual ConsumerConfig GetKafkaConfig()
         {
-            var kafkaHost = _config.GetSection("Kafka:Host").Value;
-            var kafkaPort = _config.GetSection("Kafka:Port").Value;
-            var groupId = _config.GetSection("Kafka:GroupId").Value;
+            GetKafkaHostConfig(out var kafkaHost, out var kafkaPort, out var groupId);
 
             return new ConsumerConfig
             {
@@ -84,6 +83,13 @@ namespace Inventory.API.Kafka.Consumers
                 AutoOffsetReset = AutoOffsetReset.Latest,
                 EnableAutoCommit = false,
             };
+        }
+
+        private void GetKafkaHostConfig(out string? kafkaHost, out string? kafkaPort, out string? groupId)
+        {
+            kafkaHost = _config.GetSection("Kafka:Host").Value;
+            kafkaPort = _config.GetSection("Kafka:Port").Value;
+            groupId = _config.GetSection("Kafka:GroupId").Value;
         }
 
         protected abstract Task ProcessMessage(ConsumeResult<Ignore, string> consumeResult, CancellationToken stoppingToken);
