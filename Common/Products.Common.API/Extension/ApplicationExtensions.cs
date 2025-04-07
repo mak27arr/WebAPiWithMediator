@@ -6,6 +6,7 @@ using Confluent.Kafka.Extensions.OpenTelemetry;
 using OpenTelemetry.Resources;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Configuration;
 
 namespace Products.Common.API.Extension
 {
@@ -39,6 +40,7 @@ namespace Products.Common.API.Extension
         public static IServiceCollection AddApplicationOpenTelemetry(this IServiceCollection services, IHostEnvironment envirovment)
         {
             var name = envirovment.ApplicationName;
+            //services.AddElasticApm(Configuration);
             services.AddOpenTelemetry()
                 .WithMetrics(builder =>
                 {
@@ -51,18 +53,15 @@ namespace Products.Common.API.Extension
                     })
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(name))
                     .AddPrometheusExporter();
+                }).WithTracing(builder =>
+                {
+                    builder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddGrpcClientInstrumentation()
+                    .AddConfluentKafkaInstrumentation()
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(name));
                 });
-
-            //services.AddElasticApm(Configuration);
-            services.AddOpenTelemetry().WithTracing(builder =>
-            {
-                builder
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddGrpcClientInstrumentation()
-                .AddConfluentKafkaInstrumentation()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(name));
-            });
 
             return services;
         }
