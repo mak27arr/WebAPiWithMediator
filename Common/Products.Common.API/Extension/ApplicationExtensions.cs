@@ -1,7 +1,11 @@
-﻿using Asp.Versioning;
-using Elastic.CommonSchema;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using Confluent.Kafka.Extensions.OpenTelemetry;
+using OpenTelemetry.Resources;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Products.Common.API.Extension
 {
@@ -32,23 +36,35 @@ namespace Products.Common.API.Extension
             return services;
         }
 
-        public static IServiceCollection AddOpenTelemetry(this IServiceCollection services)
+        public static IServiceCollection AddApplicationOpenTelemetry(this IServiceCollection services, IHostEnvironment envirovment)
         {
-            services.AddOpenTelemetryTracing(builder =>
-            {
-                builder
-                    .AddHttpClientInstrumentation()
+            var name = envirovment.ApplicationName;
+            services.AddOpenTelemetry()
+                .WithMetrics(builder =>
+                {
+                    builder
                     .AddAspNetCoreInstrumentation()
-                    .AddGrpcClientInstrumentation()
-                    .AddGrpcCoreInstrumentation()
-                    .AddKafkaInstrumentation()
+                    .AddHttpClientInstrumentation()
                     .AddEventCountersInstrumentation(options =>
                     {
                         options.AddEventSources("Microsoft.AspNetCore.Hosting", "Microsoft-AspNetCore-Server-Kestrel");
                     })
-                    .AddConsoleExporter()
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(name))
                     .AddPrometheusExporter();
+                });
+
+            //services.AddElasticApm(Configuration);
+            services.AddOpenTelemetry().WithTracing(builder =>
+            {
+                builder
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddGrpcClientInstrumentation()
+                .AddConfluentKafkaInstrumentation()
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(name));
             });
+
+            return services;
         }
     }
 }
