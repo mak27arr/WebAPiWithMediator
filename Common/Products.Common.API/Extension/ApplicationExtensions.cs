@@ -39,8 +39,15 @@ namespace Products.Common.API.Extension
                 builder
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation()
+                    .AddGrpcClientInstrumentation()
+                    .AddGrpcCoreInstrumentation()
                     .AddKafkaInstrumentation()
-                    .AddConsoleExporter();  // Optional: Export to the console for debugging
+                    .AddEventCountersInstrumentation(options =>
+                    {
+                        options.AddEventSources("Microsoft.AspNetCore.Hosting", "Microsoft-AspNetCore-Server-Kestrel");
+                    })
+                    .AddConsoleExporter()
+                    .AddPrometheusExporter();
             });
         }
     }
