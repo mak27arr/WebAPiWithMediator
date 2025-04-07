@@ -8,10 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Products.Common" Version="1.0.29" />
-    <PackageReference Include="Products.Common.API" Version="1.0.27" />
+    <PackageReference Include="Products.Common" Version="1.0.32" />
+    <PackageReference Include="Products.Common.API" Version="1.0.38" />
     <PackageReference Include="Products.Common.Auth" Version="1.0.21" />
-    <PackageReference Include="Products.Common.Type" Version="1.0.28" />
+    <PackageReference Include="Products.Common.Type" Version="1.0.32" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
   </ItemGroup>
 

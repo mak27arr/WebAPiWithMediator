@@ -19,6 +19,7 @@ builder.Services.AddSwaggerServices(versions: "v1");
 builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
 builder.Services.AddControllers();
 builder.Services.AddProductHealthChecks();
+builder.Services.AddApplicationOpenTelemetry(builder.Environment);
 
 var app = builder.Build();
 
