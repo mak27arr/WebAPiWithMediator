@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using Products.Common.Kafka;
 using Products.Common.Kafka.EventArg;
 using Serilog.Context;
 using System.Diagnostics;
@@ -15,24 +16,19 @@ namespace Inventory.API.Kafka.Consumers
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
         private readonly string _topic;
-        private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly IAsyncPolicy _retryPolicy;
         private static readonly ActivitySource _activitySource = new("KafkaConsumer");
 
         protected ConsumerBase(
             IConfiguration config,
-            ILogger logger)
+            ILogger logger,
+            IRetryPolicyProvider retryPolicyProvider)
         {
             _config = config;
             _logger = logger;
             _topic = GetTopicName();
 
-            _retryPolicy = Policy
-            .Handle<Exception>()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-            (exception, timeSpan, retryCount, context) =>
-            {
-                _logger.LogWarning($"Attempt {retryCount} failed. Retrying in {timeSpan.TotalSeconds} seconds...");
-            });
+            _retryPolicy = retryPolicyProvider.GetKafkaConsumerPolicy();
         }
 
         private string GetTopicName() => new TEvent().Topic;
