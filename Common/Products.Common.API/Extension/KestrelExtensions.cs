@@ -40,7 +40,7 @@ namespace Products.Common.API.Extension
 
         private static bool IsHttpsAvailable(IConfiguration configuration, out string httpsCertificatePath)
         {
-            httpsCertificatePath = configuration["KestrelPorts:Endpoints:Https:CertificatePath"];
+            httpsCertificatePath = configuration["KestrelPorts:Endpoints:Https:CertificatePath"] ?? string.Empty;
             return !string.IsNullOrEmpty(httpsCertificatePath) && File.Exists(httpsCertificatePath);
         }
     }

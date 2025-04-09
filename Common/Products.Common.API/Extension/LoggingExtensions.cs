@@ -1,11 +1,9 @@
-﻿using Elastic.Ingest.Elasticsearch.DataStreams;
-using Elastic.Ingest.Elasticsearch;
-using Elastic.Serilog.Sinks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Serilog;
-using Elastic.Transport;
 using Microsoft.Extensions.Hosting;
-using Products.Common.API.Enricher;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
 
 namespace Products.Common.API.Extension
 {
@@ -17,24 +15,27 @@ namespace Products.Common.API.Extension
 
             var elasticConfig = builder.Configuration.GetSection("Logging:ElasticSearch");
 
-            var elasticUri = elasticConfig["Uri"];
+            var elasticUriStr = elasticConfig["Uri"];
+            var elasticUri = elasticUriStr != null ? new Uri(elasticUriStr) : null;
             var elasticUser = elasticConfig["Username"];
             var elasticPass = elasticConfig["Password"];
             var name = builder.Environment.ApplicationName;
             var hostEnvironment = builder.Environment.IsDevelopment() ? Environments.Development : Environments.Production;
 
+            var elasticSinkOptions = new ElasticsearchSinkOptions(elasticUri)
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = "logs-{0:yyyy.MM.dd}",
+                ModifyConnectionSettings = conn =>
+                    conn.BasicAuthentication(elasticUser, elasticPass),
+                FailureCallback = (logEvent, ex) => Console.WriteLine($"Elasticsearch log failure: {ex.Message}"),
+                EmitEventFailure = EmitEventFailureHandling.WriteToFailureSink | EmitEventFailureHandling.RaiseCallback
+            };
+
             Log.Logger = new LoggerConfiguration()
-                .Enrich.With<SessionIdEnricher>()
-                .WriteTo.Elasticsearch(new[] { new Uri(elasticUri) }, opts =>
-                {
-                    opts.DataStream = new DataStreamName("logs", name, hostEnvironment);
-                    opts.BootstrapMethod = BootstrapMethod.Failure;
-                }, transport =>
-                {
-                    transport.Authentication(new BasicAuthentication(elasticUser, elasticPass));
-                })
-                .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day)
                 .Enrich.FromLogContext()
+                .WriteTo.Elasticsearch(elasticSinkOptions)
+                .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             builder.Host.UseSerilog();
