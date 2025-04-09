@@ -27,9 +27,9 @@ namespace Inventory.Application.Services
             await CheckIfProductExists(productId);
 
             var currentProductCount = await _inventory.InventoryRepository.GetProductAsync(productId);
-            
             var isNewProduct = currentProductCount == null;
-            if (isNewProduct)
+
+            if (currentProductCount == null)
                 currentProductCount = new ProductInventory() { ProductId = productId };
 
             currentProductCount.Add(amount);
@@ -62,7 +62,7 @@ namespace Inventory.Application.Services
             await _inventory.InventoryRepository.UpdateProductInInventoryAsync(productInventory);
             await _inventory.SaveChangesAsync();
 
-            return productInventory.Quantity.Value;
+            return productInventory.Quantity ?? 0;
         }
 
         public async Task ReserveProductAsync(int? productId, int amount, Guid addedBy, EventReferenceType addedByType)

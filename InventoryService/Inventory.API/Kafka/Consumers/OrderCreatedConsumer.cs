@@ -34,17 +34,20 @@ namespace Inventory.API.Kafka.Consumers
 
             try
             {
-                await mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
-                await SendReservationSucceeded(order);
+                if (order != null)
+                {
+                    await mediator.Send(new ReserveInventoryByOrderCommand(order), stoppingToken);
+                    await SendReservationSucceeded(order);
+                }
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning("Inventory reservation failed for product {0}: {1}", order.ProductId, ex.Message);
+                _logger.LogWarning("Inventory reservation failed for product {0}: {1}", order?.ProductId, ex.Message);
                 await SendReservationFailed(order, ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while reserving inventory for product {0}", order.ProductId);
+                _logger.LogError(ex, "Unexpected error while reserving inventory for product {0}", order?.ProductId);
                 throw;
             }
         }
@@ -59,11 +62,11 @@ namespace Inventory.API.Kafka.Consumers
             await _kafkaProducer.ProduceAsync(reservedEvent);
         }
 
-        private async Task SendReservationFailed(OrderCreatedEvent order, string message)
+        private async Task SendReservationFailed(OrderCreatedEvent? order, string message)
         {
             var notAvailableEvent = new InventoryNotAvailableEvent
             {
-                OrderId = order.OrderId,
+                OrderId = order?.OrderId ?? Guid.Empty,
                 Message = message
             };
 
