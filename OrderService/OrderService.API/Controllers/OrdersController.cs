@@ -7,7 +7,7 @@ using Products.Common.Auth.Role;
 
 namespace OrderService.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/orders")]
     [ApiVersion("1.0")]
     [ApiController]
     [Authorize(Roles = $"{UserRoles.Manager}")]
@@ -20,7 +20,7 @@ namespace OrderService.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {
             var orderId = await _mediator.Send(command);

@@ -9,7 +9,7 @@ using Products.Common.Auth.Role;
 
 namespace Products.ProductAPI.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/products")]
     [ApiController]
     [ApiVersion("1.0")]
     [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Manager},{UserRoles.Logistics}")]

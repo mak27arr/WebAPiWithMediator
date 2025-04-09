@@ -2,14 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Products.Common.Auth.Role;
 using Products.Core.Commands.CurrencyCommands;
 using Products.Core.Queries.CurrenciesQueries;
 
 namespace Products.ProductAPI.Controllers
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/currencies")]
     [ApiVersion("1.0")]
     [Authorize]
     public class CurrencyController : ControllerBase

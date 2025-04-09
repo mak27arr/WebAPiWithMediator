@@ -8,7 +8,7 @@ using UserService.Domain.Entities;
 using Asp.Versioning;
 namespace UserService.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/profile")]
     [ApiVersion("1.0")]
     [ApiController]
     public class ProfileController : ControllerBase

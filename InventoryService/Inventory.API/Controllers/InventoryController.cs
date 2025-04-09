@@ -11,7 +11,7 @@ using Products.Common.Auth.Role;
 namespace Inventory.API.Controllers
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/inventory")]
     [ApiVersion("1.0")]
     [Authorize(Roles = $"{UserRoles.Logistics}")]
     public class InventoryController : ControllerBase
@@ -25,7 +25,7 @@ namespace Inventory.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("AddProduct")]
+        [HttpPost("add-stock")]
         public async Task<IActionResult> AddProduct([FromBody] ProductStoreDto productStoreDto)
         {
             var command = _mapper.Map<AddProductToInventoryCommand>(productStoreDto);
@@ -34,7 +34,7 @@ namespace Inventory.API.Controllers
             return Ok("Product added successfully.");
         }
 
-        [HttpPost("RemoveProduct")]
+        [HttpPost("remove-stock")]
         public async Task<IActionResult> RemoveProduct([FromBody] ProductStoreDto productStoreDto)
         {
             var command = _mapper.Map<RemoveProductFromInventoryCommand>(productStoreDto);
@@ -43,7 +43,7 @@ namespace Inventory.API.Controllers
             return Ok($"Product removed successfully. Current count: {result}");
         }
 
-        [HttpGet("GetProductCount/{productId}")]
+        [HttpGet("products/{productId}/count")]
         public async Task<IActionResult> GetProductCount(int productId)
         {
             var query = new GetProductCountQuery() { ProductId = productId };
