@@ -1,5 +1,7 @@
+using Inventory.API.Endpoint;
 using Inventory.API.Extension;
 using Inventory.Application.Extensions;
+using Products.Common.API.Endpoint;
 using Products.Common.API.Extension;
 using Products.Common.API.Middleware;
 using Products.Common.Auth.Extension;
@@ -17,7 +19,8 @@ builder.Services.AddCustomCors();
 builder.Services.ConfigureApiVersion();
 builder.Services.AddSwaggerServices(versions: "v1");
 builder.Services.AddAuthConfig(builder.Configuration, builder.Environment);
-builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddEndpointDefinitions(typeof(InventoryEndpoints));
 builder.Services.AddProductHealthChecks();
 builder.Services.AddApplicationOpenTelemetry(builder.Environment);
 
@@ -37,7 +40,7 @@ app.UseRouting();
 app.ConfigureAuthentication(app.Configuration);
 app.UseHttpMetrics();
 app.MapMetrics();
-app.MapControllers();
+app.UseEndpointDefinitions();
 app.UseHealthChecks("/health");
 
 app.Run();

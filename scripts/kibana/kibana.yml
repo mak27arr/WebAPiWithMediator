@@ -1,0 +1,31 @@
+# Kibana server settings
+server.host: "0.0.0.0"   # Allow Kibana to listen on all network interfaces
+server.port: 5601         # Set the port Kibana will run on
+
+# Elasticsearch settings
+elasticsearch.hosts: ["http://elasticsearch:9200"]  # Point Kibana to Elasticsearch
+elasticsearch.username: "kibana_service"
+elasticsearch.password: "kibana_service_password"
+
+# Enable/disable monitoring
+xpack.monitoring.ui.enabled: true
+
+# Enable/disable reporting
+xpack.reporting.enabled: false  # Disable reporting if you don't need it
+
+# Set logging options
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log  # Set log file location
+      layout:
+        type: pattern
+        pattern: "[%date] [%level] %message"  # Log pattern
+  loggers:
+    - name: default
+      appenders: [file]
+      level: info
+
+# Set the encryption key (important for encrypted saved objects)
+xpack.encryptedSavedObjects.encryptionKey: "your-32-character-long-encryption-key-here"

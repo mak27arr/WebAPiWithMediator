@@ -30,6 +30,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
   inventoryService:
     image: inventory_service
     container_name: ${INVENTORY_SERVICE_CONTAINER}
@@ -56,6 +58,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
   OrderService:
     image: order_service
     container_name: ${ORDER_SERVICE_CONTAINER}
@@ -81,6 +85,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
   userservice:
     image: user_service
     container_name: ${USERSERVICE__CONTAINER}
@@ -104,7 +110,10 @@ services:
       - "traefik.http.middlewares.userprofile-stripprefix.stripprefix.prefixes=/api/userprofile"
       - "traefik.http.routers.userprofile-swagger.middlewares=userprofile-stripprefix"
     depends_on:
-      - mongo
+      mongo:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
   # gateway:
   #   image: ${DOCKER_REGISTRY-}gateway
   #   container_name: gateway
@@ -324,11 +333,11 @@ services:
     volumes:
       - es_data:/usr/share/elasticsearch/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 10s
-      retries: 5
+      test: ["CMD-SHELL", "curl -s --user ${ELASTICSEARCH__USERNAME}:${ELASTICSEARCH__PASSWORD} http://localhost:9200/_cluster/health | grep -q 'status.*green\\|yellow' || exit 1"]
+      interval: 5s
+      timeout: 2s
+      retries: 50
       start_period: 30s
-      timeout: 10s
   kibana:
     image: docker.elastic.co/kibana/kibana:8.6.0
     container_name: kibana
