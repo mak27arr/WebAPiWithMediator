@@ -1,4 +1,6 @@
-﻿namespace Inventory.API.Endpoint
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace Inventory.API.Endpoint
 {
     public interface IEndpointDefinition
     {
