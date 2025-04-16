@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Inventory.API.Endpoint
+namespace Products.Common.API.Endpoint
 {
     public interface IEndpointDefinition
     {

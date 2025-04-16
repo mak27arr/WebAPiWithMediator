@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Inventory.API.Endpoint
+namespace Products.Common.API.Endpoint
 {
     public static class AddEndpointDefinition
     {
