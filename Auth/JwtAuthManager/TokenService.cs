@@ -17,15 +17,18 @@ namespace JwtAuthManager
             _settings = settings;
         }
 
-        public async Task<string> GenerateToken(string username)
+        public Task<string> GenerateToken(string username)
         {
             var claimsIdentity = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, username),
                 new Claim("scope", "api.read"),
-                new Claim("aud", _settings.Audience),
-                new Claim("iss", _settings.Authority)
+                new Claim("aud", _settings.Audience ?? string.Empty),
+                new Claim("iss", _settings.Authority ?? string.Empty)
             });
+
+            if (string.IsNullOrEmpty(_settings.IssuerSigningKey))
+                return Task.FromResult(string.Empty);
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.IssuerSigningKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -38,15 +41,18 @@ namespace JwtAuthManager
             };
 
             var handler = new JsonWebTokenHandler();
-            return handler.CreateToken(tokenDescriptor);
+            return Task.FromResult(handler.CreateToken(tokenDescriptor));
         }
 
-        public async Task<ClaimsPrincipal> ValidateToken(string token)
+        public Task<ClaimsPrincipal?> ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             try
             {
+                if (string.IsNullOrWhiteSpace(_settings.IssuerSigningKey))
+                    return Task.FromResult(null as ClaimsPrincipal);
+
                 var key = Encoding.UTF8.GetBytes(_settings.IssuerSigningKey);
                 var validationParameters = new TokenValidationParameters
                 {
@@ -60,17 +66,17 @@ namespace JwtAuthManager
                 };
 
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-                return principal;
+                return Task.FromResult<ClaimsPrincipal?>(principal);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return null;
+                return Task.FromResult(null as ClaimsPrincipal);
             }
         }
 
-        public async Task<bool> LoginUser(string username, string password)
+        public Task<bool> LoginUser(string username, string password)
         {
-            return username == "testuser" && password == "password";
+            return Task.FromResult(username == "testuser" && password == "password");
         }
     }
 }

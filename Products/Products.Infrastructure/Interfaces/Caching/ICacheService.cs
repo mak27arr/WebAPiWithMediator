@@ -4,7 +4,7 @@
     {
         Task SetCacheAsync(string key, T value, TimeSpan? expiry = null);
 
-        Task<T> GetCacheAsync(string key);
+        Task<T?> GetCacheAsync(string key);
 
         Task InvalidateCacheAsync();
 

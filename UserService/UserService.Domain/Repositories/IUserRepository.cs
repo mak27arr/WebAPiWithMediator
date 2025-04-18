@@ -9,6 +9,6 @@ namespace UserService.Domain.Repositories
         Task CreateAsync(UserProfile user);
         Task UpdateAsync(UserProfile user);
         Task DeleteAsync(Guid id);
-        Task<UserProfile> GetByUserIdAsync(string userId);
+        Task<UserProfile?> GetByUserIdAsync(string userId);
     }
 }

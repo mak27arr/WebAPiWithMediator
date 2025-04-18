@@ -48,6 +48,8 @@ namespace Inventory.API.Endpoint
             IMapper mapper)
         {
             var command = mapper.Map<RemoveProductFromInventoryCommand>(productStoreDto);
+            command.ReferenceType = Domain.Events.EventReferenceType.Api;
+            command.ReferenceId = string.Empty;
             var result = await mediator.Send(command);
             return Results.Ok($"Product removed successfully. Current count: {result}");
         }

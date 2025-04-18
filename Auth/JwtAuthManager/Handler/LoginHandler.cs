@@ -18,7 +18,7 @@ namespace JwtAuthManager.Handler
             var isAuthenticated = await _tokenService.LoginUser(request.Username, request.Password);
 
             if (!isAuthenticated)
-                return null;
+                return string.Empty;
 
             return  await _tokenService.GenerateToken(request.Username);
         }

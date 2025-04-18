@@ -104,9 +104,10 @@ namespace Inventory.API.Kafka.Consumers
             }
         }
 
-        protected virtual async Task SendToDeadLetterQueue(ConsumeResult<Ignore, string> result)
+        protected virtual Task SendToDeadLetterQueue(ConsumeResult<Ignore, string> result)
         {
             //TODO
+            return Task.CompletedTask;
         }
 
         private static string GetSesionId(ConsumeResult<Ignore, string> result)

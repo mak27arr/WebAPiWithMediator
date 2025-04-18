@@ -27,7 +27,7 @@ namespace Products.Infrastructure.Extensions
                 return redisConfig.GetConnection();
             });
 
-            services.AddSingleton(typeof(ICacheService<>), typeof(GenericCacheService<>));
+            services.AddSingleton(typeof(ICacheService<>), typeof(CacheService<>));
 
             return services;
         }

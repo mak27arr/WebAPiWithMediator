@@ -5,7 +5,7 @@ namespace Inventory.Application.Features.Inventory.Commands
 {
     public class AddProductToInventoryCommand : IRequest
     {
-        public string? ReferenceId { get; set; }
+        public required string ReferenceId { get; set; }
 
         public EventReferenceType ReferenceType { get; set; }
 

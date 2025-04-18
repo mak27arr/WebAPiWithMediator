@@ -41,7 +41,7 @@ namespace UserService.Infrastructure.Repositories
             return mongoProfile != null ? _mapper.Map<UserProfile>(mongoProfile) : null;
         }
 
-        public async Task<UserProfile> GetByUserIdAsync(string userId)
+        public async Task<UserProfile?> GetByUserIdAsync(string userId)
         {
             var mongoProfile = await _users.Find(u => u.UserId == userId).FirstOrDefaultAsync();
             return mongoProfile != null ? _mapper.Map<UserProfile>(mongoProfile) : null;

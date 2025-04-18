@@ -13,7 +13,7 @@ namespace UserService.Application.Services
             _repository = repository;
         }
 
-        public async Task<UserProfile> CreateUserProfileAsync(string? userId, string? email, string? userName)
+        public async Task<UserProfile> CreateUserProfileAsync(string userId, string email, string userName)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("User ID not found.");

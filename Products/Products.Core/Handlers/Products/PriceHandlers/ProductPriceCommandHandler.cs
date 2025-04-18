@@ -33,8 +33,10 @@ namespace Products.Core.Handlers.Products.PriceHandlers
 
             var price = new ProductPriceHistory
             {
+                Product = product,
                 ProductId = request.ProductId,
                 Price = request.Price,
+                Currency = currency,
                 CurrencyId = request.CurrencyId,
                 ChangedAtUtc = DateTime.UtcNow
             };

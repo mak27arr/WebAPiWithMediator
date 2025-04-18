@@ -8,6 +8,6 @@ namespace Products.Core.Commands.Products
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }

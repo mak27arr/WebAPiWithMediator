@@ -6,7 +6,7 @@ namespace JwtAuthManager.Interface
     {
         Task<string> GenerateToken(string username);
 
-        Task<ClaimsPrincipal> ValidateToken(string token);
+        Task<ClaimsPrincipal?> ValidateToken(string token);
 
         Task<bool> LoginUser(string username, string password);
     }

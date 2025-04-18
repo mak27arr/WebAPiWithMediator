@@ -10,7 +10,7 @@ namespace Products.Common.RetryPolicyProvide
         private readonly ILogger<DefaultRetryPolicyProvider> _logger;
         private readonly RetryPolicyConfig _config;
 
-        public DefaultRetryPolicyProvider(ILogger<DefaultRetryPolicyProvider> logger, IOptions<RetryPolicyConfig?> config)
+        public DefaultRetryPolicyProvider(ILogger<DefaultRetryPolicyProvider> logger, IOptions<RetryPolicyConfig> config)
         {
             _logger = logger;
             _config = config.Value ?? new RetryPolicyConfig();

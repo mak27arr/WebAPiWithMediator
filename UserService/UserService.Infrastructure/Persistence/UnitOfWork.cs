@@ -6,7 +6,7 @@ namespace UserService.Infrastructure.Persistence
     internal class UnitOfWork : IUnitOfWork
     {
         private readonly IMongoClient _mongoClient;
-        private IClientSessionHandle _session;
+        private IClientSessionHandle? _session;
 
         public UnitOfWork(IMongoClient mongoClient)
         {
@@ -21,11 +21,19 @@ namespace UserService.Infrastructure.Persistence
 
         public async Task CommitTransactionAsync()
         {
+            if (_session == null)
+                throw new InvalidOperationException("Transaction has not been started.");
+
             await _session.CommitTransactionAsync();
+            _session?.Dispose();
+            _session = null;
         }
 
         public async Task AbortTransactionAsync()
         {
+            if (_session == null)
+                throw new InvalidOperationException("Transaction has not been started.");
+
             await _session.AbortTransactionAsync();
         }
 

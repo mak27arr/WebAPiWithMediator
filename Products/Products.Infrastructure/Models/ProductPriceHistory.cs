@@ -6,7 +6,7 @@
 
         public int ProductId { get; set; }
 
-        public Product Product { get; set; }
+        public required Product Product { get; set; }
 
         public double Price { get; set; }
 
@@ -14,6 +14,6 @@
 
         public int CurrencyId { get; set; }
 
-        public Currency Currency { get; set; }
+        public required Currency Currency { get; set; }
     }
 }

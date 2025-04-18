@@ -34,10 +34,7 @@ app.ConfigureAuthentication(app.Configuration);
 app.UseHttpMetrics();
 app.MapMetrics();
 app.UseCustomSwagger(versions: "v1");
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
 app.UseHealthChecks("/health");
 
 

@@ -2,8 +2,8 @@
 {
     public interface IUserContextService
     {
-        string? GetUserId();
-        string? GetEmail();
-        string? GetUserName();
+        string GetUserId();
+        string GetEmail();
+        string GetUserName();
     }
 }

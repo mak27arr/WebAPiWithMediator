@@ -6,36 +6,41 @@ using System.Text.Json;
 
 namespace Products.Infrastructure.Caching
 {
-    internal class GenericCacheService<T> : ICacheService<T> where T : class
+    internal class CacheService<T> : ICacheService<T> where T : class
     {
-        private readonly ConnectionMultiplexer _connection;
-        private readonly IDatabase _cache;
+        private readonly ConnectionMultiplexer? _connection;
+        private readonly IDatabase? _cache;
         private readonly ILogger _loger;
         private readonly string _redisPrefix;
         private readonly int BatchSize = 1000;
 
-        public GenericCacheService(ILogger<GenericCacheService<T>> loger, RedisCacheConfiguration redisCacheConfiguration)
+        public CacheService(ILogger<CacheService<T>> loger, RedisCacheConfiguration redisCacheConfiguration)
         {
-            _connection = redisCacheConfiguration.GetConnection();
-            _cache = _connection.GetDatabase();
+            _connection = redisCacheConfiguration?.GetConnection();
+            _cache = _connection?.GetDatabase();
             _loger = loger;
             _redisPrefix = GetPrefixForType(typeof(T));
+
+            if (_connection == null)
+                _loger.LogCritical("Redis {Type} ConnectionMultiplexer null!", _redisPrefix);
         }
 
-        public async Task<T> GetCacheAsync(string key)
+        public async Task<T?> GetCacheAsync(string key)
         {
-            var cachedData = await _cache.StringGetAsync(GetRedisKey(key));
+            var cachedData = _cache != null ? await _cache.StringGetAsync(GetRedisKey(key)) : RedisValue.Null;
 
-            if (string.IsNullOrWhiteSpace(cachedData))
+            if (cachedData.IsNullOrEmpty)
                 return default;
 
-            return JsonSerializer.Deserialize<T>(cachedData);
+            return JsonSerializer.Deserialize<T>(cachedData.ToString());
         }
 
         public async Task SetCacheAsync(string key, T value, TimeSpan? expiry = null)
         {
             var serializedData = JsonSerializer.Serialize(value);
-            await _cache.StringSetAsync(GetRedisKey(key), serializedData, expiry);
+
+            if (_cache != null)
+                await _cache.StringSetAsync(GetRedisKey(key), serializedData, expiry);
         }
 
         public async Task InvalidateCacheAsync()
@@ -52,6 +57,12 @@ namespace Products.Infrastructure.Caching
         private async Task InvalidateCacheForKeyAsync(string redisPrefix)
         {
             var keysBatch = ArrayPool<RedisKey>.Shared.Rent(BatchSize);
+
+            if (_connection == null || _cache == null)
+            {
+                _loger.LogError("Cache not connected");
+                return;
+            }
 
             foreach (var endpoint in _connection.GetEndPoints())
             {

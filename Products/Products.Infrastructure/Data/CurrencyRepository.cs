@@ -20,9 +20,12 @@ namespace Products.Infrastructure.Data
             return currency.Id;
         }
 
-        public async Task<Currency> GetByIdAsync(int id) => await _context.Currencies.FindAsync(id);
+        public async Task<Currency?> GetByIdAsync(int id)
+        {
+            return await _context.Currencies.FindAsync(id);
+        }
 
-        public async Task<Currency> GetByCodeAsync(string code) => await _context.Currencies.FirstOrDefaultAsync(c => c.Code == code);
+        public async Task<Currency?> GetByCodeAsync(string code) => await _context.Currencies.FirstOrDefaultAsync(c => c.Code == code);
 
         public async Task<List<Currency>> GetAllAsync() => await _context.Currencies.ToListAsync();
     }

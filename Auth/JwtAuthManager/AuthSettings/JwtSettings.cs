@@ -2,10 +2,10 @@
 {
     internal class JwtSettings : IJwtSettings
     {
-        public string IssuerSigningKey { get; set; }
+        public string? IssuerSigningKey { get; set; }
 
-        public string Authority { get; set; }
+        public string? Authority { get; set; }
 
-        public string Audience { get; set; }
+        public string? Audience { get; set; }
     }
 }

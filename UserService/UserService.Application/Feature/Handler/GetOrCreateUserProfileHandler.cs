@@ -24,9 +24,9 @@ namespace UserService.Application.Feature.Handler
 
         public async Task<UserProfileDto> Handle(GetOrCreateUserProfileQuery request, CancellationToken cancellationToken)
         {
-            var userId = _userContextService.GetUserId();
-            var email = _userContextService.GetEmail();
-            var userName = _userContextService.GetUserName();
+            var userId = _userContextService.GetUserId() ?? string.Empty;
+            var email = _userContextService.GetEmail() ?? string.Empty;
+            var userName = _userContextService.GetUserName() ?? string.Empty;
 
             var userProfile = await _userProfileService.GetOrCreateUserProfileAsync(userId, email, userName);
 

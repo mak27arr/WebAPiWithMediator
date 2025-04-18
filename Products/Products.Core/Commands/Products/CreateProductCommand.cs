@@ -5,6 +5,6 @@ namespace Products.Core.Commands.Products
 {
     public class CreateProductCommand : IRequest<ProductDTO>
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }

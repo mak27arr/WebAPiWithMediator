@@ -33,12 +33,12 @@ namespace Products.Infrastructure.Data
             return (int) Math.Ceiling((double)await _context.Products.AsQueryable().CountAsync() / pageSize);
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
             return await _context.Products.Include(x => x.Currency).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Product> AddProductAsync(Product product)
+        public async Task<Product?> AddProductAsync(Product product)
         {
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
@@ -46,7 +46,7 @@ namespace Products.Infrastructure.Data
             return product;
         }
 
-        public async Task<Product> UpdateProductAsync(Product product)
+        public async Task<Product?> UpdateProductAsync(Product product)
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
