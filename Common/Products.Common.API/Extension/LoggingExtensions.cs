@@ -19,7 +19,7 @@ namespace Products.Common.API.Extension
             var elasticUri = elasticUriStr != null ? new Uri(elasticUriStr) : null;
             var elasticUser = elasticConfig["Username"];
             var elasticPass = elasticConfig["Password"];
-            var name = builder.Environment.ApplicationName;
+            var applicationName = builder.Environment.ApplicationName;
             var hostEnvironment = builder.Environment.IsDevelopment() ? Environments.Development : Environments.Production;
 
             var elasticSinkOptions = new ElasticsearchSinkOptions(elasticUri)
@@ -29,12 +29,19 @@ namespace Products.Common.API.Extension
                 ModifyConnectionSettings = conn =>
                     conn.BasicAuthentication(elasticUser, elasticPass),
                 FailureCallback = (logEvent, ex) => Console.WriteLine($"Elasticsearch log failure: {ex.Message}"),
-                EmitEventFailure = EmitEventFailureHandling.WriteToFailureSink | EmitEventFailureHandling.RaiseCallback
+                EmitEventFailure = EmitEventFailureHandling.WriteToFailureSink | EmitEventFailureHandling.RaiseCallback,
+                QueueSizeLimit = 10000,
+                ConnectionTimeout = TimeSpan.FromSeconds(5),
+                NumberOfShards = 1,
+                NumberOfReplicas = 1
             };
 
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Elasticsearch(elasticSinkOptions)
+                .Enrich.WithProperty("ApplicationName", applicationName)
+                .Enrich.WithProperty("Environment", hostEnvironment)
+                .WriteTo.Async(a => a.Elasticsearch(elasticSinkOptions))
+                .WriteTo.Console()
                 .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
