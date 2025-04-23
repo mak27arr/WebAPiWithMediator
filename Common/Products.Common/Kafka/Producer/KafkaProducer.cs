@@ -33,7 +33,7 @@ namespace Products.Common.Kafka.Producer
             return new ProducerConfig { BootstrapServers = $"{kafkaHost}:{kafkaPort}" };
         }
 
-        public async Task ProduceAsync<T>(string topic, T message)
+        public async Task ProduceAsync<T>(string topic, T message, CancellationToken token = default)
         {
             var jsonMessage = JsonSerializer.Serialize(message);
             var headers = new Headers
@@ -45,7 +45,7 @@ namespace Products.Common.Kafka.Producer
             try
             {
                 _logger.LogInformation("Send Kafka event to {Topic}: {Message}", topic, jsonMessage);
-                await _retryPolicy.ExecuteAsync(() => _producer.ProduceAsync(topic, kafkaMessage));
+                await _retryPolicy.ExecuteAsync(() => _producer.ProduceAsync(topic, kafkaMessage, token));
             }
             catch (Exception ex)
             {
@@ -53,9 +53,9 @@ namespace Products.Common.Kafka.Producer
             }
         }
 
-        public async Task ProduceAsync<T>(T message) where T : BaseEvent
+        public async Task ProduceAsync<T>(T message, CancellationToken token = default) where T : BaseEvent
         {
-            await ProduceAsync(message.Topic, message);
+            await ProduceAsync(message.Topic, message, token);
         }
     }
 }
