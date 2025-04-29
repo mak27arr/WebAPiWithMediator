@@ -27,12 +27,16 @@ namespace Products.Common.API.Extension
             return services;
         }
 
-        public static IServiceCollection AddProductHealthChecks(this IServiceCollection services, Func<HealthCheckResult>? check = null)
+        public static IServiceCollection AddProductHealthChecks(this IServiceCollection services,
+            Func<HealthCheckResult>? serviceCheck = null,
+            Action<IHealthChecksBuilder>? configure = null)
         {
-            if (check == null)
-                check = () => HealthCheckResult.Healthy("Service is running.");
+            serviceCheck ??= () => HealthCheckResult.Healthy("Service is running.");
 
-            services.AddHealthChecks().AddCheck("Service", check);
+            var builder = services.AddHealthChecks()
+                .AddCheck("Service", check: serviceCheck);
+
+            configure?.Invoke(builder);
 
             return services;
         }
